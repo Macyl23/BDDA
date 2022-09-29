@@ -1,11 +1,17 @@
-import java.io.File;
+
+import java.io.IOException;
+import java.io.RandomAccessFile;
+import java.nio.ByteBuffer;
+import java.util.Arrays;
 
 public class Main {
-	public static void main(String[] args ) {
-        System.out.println("Hello world");
-        DBParams.DBPath= new File("/~/BDDA/Projet_BDDA_BAITICHE_AHMEDZAID_BOUAKI_DERAI/DB");
-        DBParams.pageSize=4096;
-        DBParams.maxPagesPerFile=4;
+	public static void main(String[] args ) throws IOException {   
+        DBParams.DBPath = args[0];
+        DBParams.pageSize = 4;
+        
+        
+        
+
     }
 
 }
