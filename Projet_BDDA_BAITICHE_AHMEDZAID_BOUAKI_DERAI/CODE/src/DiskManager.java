@@ -43,12 +43,12 @@ public class DiskManager {
 	 * @params: PageId, ByteBuffer
 	 * On accéde a la page dans le fichier qui est passé en params
 	 * on vérifie si il y'a assez de place dans la buffer pour stocker de l'information
-	 * si ou on lit ce qui a dans le fichier on le stocke dans le buffer
-	 * sinon on lit octet par octet jusqu'a remplier le buffer
+	 * si oui on lit ce qui a dans le fichier on le stocke dans le buffer
+	 * sinon on lit octet par octet jusqu'a remplir le buffer
 	 */
 	public void readPage(PageId pid, ByteBuffer buff) throws IOException{
 		RandomAccessFile f = new RandomAccessFile(DBParams.DBPath+"/f"+pid.fileIdx+".bdda", "r");
-		int start = pid.pageIdx;
+		int start = pid.pageIdx*DBParams.pageSize;
 		f.seek(start);
 		if(buff.array().length == DBParams.pageSize){
 			f.read(buff.array());
@@ -64,8 +64,12 @@ public class DiskManager {
 	/* Ecriture dans un fichier 
 	 * 
 	 */
-	public void writePage(PageId pid, ByteBuffer buff){
-
+	public void writePage(PageId pid, ByteBuffer buff) throws IOException{
+		RandomAccessFile f = new RandomAccessFile(DBParams.DBPath+"/f"+pid.fileIdx+".bdda", "rw");
+		int start = pid.pageIdx*DBParams.pageSize;
+		f.seek(start);
+		f.write(buff.array());
+		f.close();
 	}
 
 	public void deAllocPage(PageId pid){

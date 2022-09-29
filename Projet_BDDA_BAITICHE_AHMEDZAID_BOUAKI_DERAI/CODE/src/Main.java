@@ -8,7 +8,7 @@ public class Main {
 	public static void main(String[] args ) throws IOException {   
         DBParams.DBPath = args[0];
         DBParams.pageSize = 4;
-        
+        DBParams.frameCount=2;
         
         
 

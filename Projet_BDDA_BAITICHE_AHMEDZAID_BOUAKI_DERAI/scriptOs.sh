@@ -1,4 +1,4 @@
 #!/usr/bin/env bash 
 
-javac -d CODE/IDE_PROJET_AHMEDZAID_BAITICHE_BOUAKI_DERAI/src CODE/src/*.JAVA
-java -cp CODE/IDE_PROJET_AHMEDZAID_BAITICHE_BOUAKI_DERAI/bin Main DB
+javac -d CODE/bin CODE/src/*.java
+java -cp CODE/bin DiskManagerTest DB
