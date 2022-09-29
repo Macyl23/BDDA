@@ -10,7 +10,9 @@ public class DiskManager {
 	 * @return L'index du fichier et la page
 	 */
 	private DiskManager(){};
+	public int count=0;
 	public PageId allocPage() throws IOException {
+		count++;
 		PageId pid = new PageId();
 		int i = 0;
 		int page = 0;
@@ -19,7 +21,7 @@ public class DiskManager {
 
 		while (f.exists() && !pageAvailaible) {
 			for (int j = 0; j < DBParams.maxPagesPerFile * 4; page++, j += DBParams.pageSize) {
-				if (f.length() == j) {
+				if (f.length() == j) {  //f.length renvoie la taille du fichier (nb de page remplie*4), si ==16 donc fichier à taille max 
 					pageAvailaible = true;
 					return new PageId(i,page);
 				}
@@ -49,8 +51,8 @@ public class DiskManager {
 	public void readPage(PageId pid, ByteBuffer buff) throws IOException{
 		RandomAccessFile f = new RandomAccessFile(DBParams.DBPath+"/f"+pid.fileIdx+".bdda", "r");
 		int start = pid.pageIdx;
-		f.seek(start);
-		if(buff.array().length == DBParams.pageSize){
+		f.seek(start); // deplace le curseur jusqu'à la page voulu
+		if(buff.array().length/*la taille du buffer ds main(nb de case) */ == DBParams.pageSize){ 
 			f.read(buff.array());
 		}else{
 			for(int i=0; i< DBParams.pageSize; i++){
@@ -69,10 +71,18 @@ public class DiskManager {
 	}
 
 	public void deAllocPage(PageId pid){
-
+		count--;
 	}
 
 	public int getCurrentCountAllocPages(){
-		return 0;
+		/*int count=0;
+		if(leDiskManager.allocPage()){
+			count++;
+		}
+		for(leDiskManagerdeAllocPage(pid)){
+			count--;
+		}*/
+
+		return count;
 	}
 }

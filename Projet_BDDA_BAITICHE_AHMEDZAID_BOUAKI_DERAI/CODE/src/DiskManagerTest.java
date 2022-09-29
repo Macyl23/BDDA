@@ -43,6 +43,12 @@ public class DiskManagerTest {
         DiskManager.leDiskManager.readPage(new PageId(0, 0), buff);
         System.out.println(Arrays.toString(buff.array()));
     }
+
+    public static void TestGetCurrentCountAllocPages() throws IOException{
+        DiskManager.leDiskManager.allocPage();
+        // DiskManager.leDiskManager.deAllocPage(new PageId(0,0));
+        System.out.println(DiskManager.leDiskManager.count);
+    }
     public static void main(String[] args) throws IOException {
         DBParams.DBPath = args[0];
         DBParams.pageSize = 4;
@@ -52,6 +58,7 @@ public class DiskManagerTest {
         DiskManagerTest.TestAllocPageUn();
         DiskManagerTest.TestAllocPageDeux();
         DiskManagerTest.TestReadPage();
+        DiskManagerTest.TestGetCurrentCountAllocPages();
         
         
 
