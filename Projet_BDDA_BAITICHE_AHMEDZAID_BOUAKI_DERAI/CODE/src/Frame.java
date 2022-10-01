@@ -27,7 +27,7 @@ public class Frame {
         return this.flagDirty;
     }
     //retourner le buffer
-    public ByteBuffer buff(){
+    public ByteBuffer getBuff(){
         return this.buff;
     }
     //methodes qui permettent de modifier les differents attribut de la classe
@@ -54,5 +54,9 @@ public class Frame {
             return false;
         }
         return true;
+    }
+    //incrementer du pinCount lors de chaque demande de page dans une frame
+    public void incrementerPinCount(){
+        pinCount+=1;
     }
 }
