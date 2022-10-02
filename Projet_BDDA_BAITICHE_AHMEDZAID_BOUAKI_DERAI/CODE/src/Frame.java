@@ -5,17 +5,18 @@ public class Frame {
     private int pinCount;
     private boolean flagDirty;
     private ByteBuffer buff;
-    
+    private int ts;
     //constructeur class Frame
     public Frame(){
         pageId= new PageId(-1, 0);
         pinCount=0;
         flagDirty=false;
         buff= ByteBuffer.allocate(DBParams.pageSize);
+        ts=-1;
     }
     //retourner les differents attributs
     //retourner pageId
-    public PageId GetPageId(){
+    public PageId getPageId(){
         return this.pageId;
     }
     //retourner le pinCount
@@ -59,4 +60,11 @@ public class Frame {
     public void incrementerPinCount(){
         pinCount+=1;
     }
+    public int getTs(){
+        return this.ts;
+    }
+    public void setTs(int ts){
+        this.ts=ts;
+    }
+
 }
