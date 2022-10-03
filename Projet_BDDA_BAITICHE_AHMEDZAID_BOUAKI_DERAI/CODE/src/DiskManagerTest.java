@@ -1,6 +1,4 @@
-
 import java.io.IOException;
-import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 
@@ -13,12 +11,11 @@ public class DiskManagerTest {
      * fileIdx = 0 pageIdx = 0
      */
     public static void TestAllocPageUn() throws IOException {
+        PageId p = new PageId(0,0);
         
-        RandomAccessFile file = new RandomAccessFile(DBParams.DBPath + "/f0.bdda", "rw");
-        if (DiskManager.leDiskManager.allocPage().fileIdx == 0 && DiskManager.leDiskManager.allocPage().pageIdx == 0) {
+        if (DiskManager.leDiskManager.allocPage().equals(p)) {
             System.out.println("Allocation worked successfullly");
         }
-        file.close();
     }
 
     public static void  TestAllocPageDeux() throws IOException {
@@ -27,7 +24,7 @@ public class DiskManagerTest {
          * en sacahnt qu"aucune page n'est disponible
          * Création de f1.bdda
          */
-        if (DiskManager.leDiskManager.allocPage().fileIdx == 1 && DiskManager.leDiskManager.allocPage().pageIdx == 0) {
+        if (DiskManager.leDiskManager.allocPage()== new PageId(1,0)) {
             System.out.println("File created successfully");
         }
     }
@@ -49,7 +46,18 @@ public class DiskManagerTest {
         DiskManager.leDiskManager.writePage(new PageId(0, 0), buff);
        
     }
+
+    public static void TestDeAllocPage(PageId pid){
+        System.out.println("Voici la liste des pages disponible");
+        DiskManager.leDiskManager.deAllocPage(pid);
+    }
     
+    public static void TestCountAllocDealloc(){
+        System.out.println("Deux allocutions et une dealloc");
+        if(DiskManager.leDiskManager.getCurrentCountAllocPages() == 1){
+            System.out.println("Test Reussi");
+        }
+    }
     public static void main(String[] args) throws IOException {
         DBParams.DBPath = args[0];
         DBParams.pageSize = 4;
@@ -60,7 +68,7 @@ public class DiskManagerTest {
         DiskManagerTest.TestAllocPageDeux();
         DiskManagerTest.TestReadPage();
         DiskManagerTest.TestWritePage();
-        
-
+        DiskManagerTest.TestDeAllocPage(new PageId(0,1));
+        DiskManagerTest.TestCountAllocDealloc();
     }
 }

@@ -5,7 +5,7 @@ public class Frame {
     private int pinCount;
     private boolean flagDirty;
     private ByteBuffer buff;
-    private int ts;
+    private  int ts;
     //constructeur class Frame
     public Frame(){
         pageId= new PageId(-1, 0);
@@ -65,6 +65,10 @@ public class Frame {
     }
     public void setTs(int ts){
         this.ts=ts;
+    }
+
+    public void incrementTs(){
+        ts++;
     }
 
 }
