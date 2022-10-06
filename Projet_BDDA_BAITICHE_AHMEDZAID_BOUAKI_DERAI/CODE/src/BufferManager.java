@@ -56,16 +56,27 @@ public class BufferManager {
         for (int j = 1; j < lru.size(); j++) {
             if (min > lru.get(j).getTs()) {
                 min = lru.get(j).getTs();
-                iMin=lru.
+
                 pRemplacee.setBuff(lru.get(j).getBuff());
             }
         }
-        freePage(pRemplacee.getPageId(), pRemplacee.getFlagDirty());
-        return getPage(pageId);
-        
+        if (pRemplacee.getFlagDirty() == true) {
+            this.discManager.writePage(pRemplacee.getPageId(), pRemplacee.getBuff());
+        }
+        int i=0;
+        boolean trouvee=false;
+        while(i<buffPool.length && !trouvee){
+            if(buffPool[i].getTs()==pRemplacee.getTs()){
+                buffPool[i].setPageId(pageId);
+                buffPool[i].setPinCount(1);
+                buffPool[i].setFlagDirty(false);
+                discManager.readPage(pageId, buffPool[i].getBuff());  
+                trouvee=true; 
+            }
+            i++;
+        }
+        return buffPool[i-1].getBuff();
     }
-
-    
 
     /**
      * @param pageId
