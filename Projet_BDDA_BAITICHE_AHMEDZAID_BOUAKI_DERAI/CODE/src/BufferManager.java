@@ -1,3 +1,4 @@
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
@@ -67,7 +68,16 @@ public class BufferManager {
      * ecriture des pages modifiees sur le disque
      * remise a 0 des flags/ informartions et contenus des buffers
      */
-    public void flushhAll() {
+    public void flushhAll()throws FileNotFoundException, IOException {
+        for(Frame frame: this.buffPool){
+            if(frame.getFlagDirty()){
+                this.discManager.writePage(frame.getPageId(), frame.getBuff());
+            }
+            frame.setPageId(new pageId(-1,0));
+            frame.setPinCount(0);
+            frame.setFlagDirty(false);    
+        }
+
     }
 
 }
