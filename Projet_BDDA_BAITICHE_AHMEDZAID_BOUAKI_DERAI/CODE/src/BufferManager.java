@@ -6,6 +6,7 @@ public class BufferManager {
     private static BufferManager leBufferManager = new BufferManager();
     private Frame[] buffPool;
     private DiskManager discManager;
+    private static int tsGlobal;
 
     private BufferManager() {
         this.buffPool = new Frame[DBParams.frameCount];
@@ -50,8 +51,9 @@ public class BufferManager {
     public void freePage(PageId pageId, boolean valdirty) {
         for(int i=0 ; i<buffPool.length ; i++){
             if(buffPool[i].getPageId().pageIdx == pageId.pageIdx){
-                buffPool[i].incrementTs();;
-                buffPool[i].incrementerPinCount();
+                tsGlobal++;
+                buffPool[i].setTs(tsGlobal);
+                buffPool[i].decrementerPinCount();
                 if(valdirty){
                     buffPool[i].setFlagDirty(true);
                 }else{

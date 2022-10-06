@@ -57,6 +57,9 @@ public class Frame {
         return true;
     }
     //incrementer du pinCount lors de chaque demande de page dans une frame
+    public void decrementerPinCount(){
+        pinCount-=1;
+    }
     public void incrementerPinCount(){
         pinCount+=1;
     }
