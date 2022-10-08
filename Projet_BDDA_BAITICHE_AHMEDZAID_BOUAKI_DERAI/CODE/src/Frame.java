@@ -8,7 +8,7 @@ public class Frame {
     private  int ts;
     //constructeur class Frame
     public Frame(){
-        pageId= new PageId(-1, 0);
+        pageId= new PageId(0, -1);
         pinCount=0;
         flagDirty=false;
         buff= ByteBuffer.allocate(DBParams.pageSize);
@@ -52,9 +52,9 @@ public class Frame {
     //verifier si une case est libre
     public boolean estVide(){
         if(pageId.pageIdx==-1){
-            return false;
+            return true;
         }
-        return true;
+        return false;
     }
     //incrementer du pinCount lors de chaque demande de page dans une frame
     public void decrementerPinCount(){
@@ -74,4 +74,7 @@ public class Frame {
         ts++;
     }
 
+    public String toString(){
+        return pageId.toString() + "\nPin_count " +pinCount+"\nTimestamp="+ts;
+    }
 }

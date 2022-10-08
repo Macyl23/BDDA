@@ -1,26 +1,35 @@
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 
 public class BufferManager {
-    private static BufferManager leBufferManager = new BufferManager();
+    public static BufferManager leBufferManager = new BufferManager();
     private Frame[] buffPool;
     private DiskManager discManager;
     ArrayList<Frame> lru = new ArrayList<Frame>();
-    Frame pRemplacee = null;
-    private static int tsGlobal;
+    Frame pRemplacee = new Frame();
+    private static int tsGlobal=0;
 
     private BufferManager() {
-        this.buffPool = new Frame[DBParams.frameCount];
+        
+        this.buffPool = new Frame[DBParams.frameCount];       
         this.discManager = DiskManager.leDiskManager;
 
-    };
+    }
+    
 
-    public static BufferManager getLeBufferManager() {
-        return leBufferManager;
+    // public static BufferManager getLeBufferManager() {
+    //     return leBufferManager;
+    // }
+
+    public void init(){}
+    public void initBuffPool(){
+        for(int i = 0 ; i<buffPool.length ; i++){
+            buffPool[i] = new Frame();
+        }
     }
 
+    
     /*
      * @param pageId
      * methode qui permet de chercher une page dans le bufferPool
@@ -33,8 +42,8 @@ public class BufferManager {
         // verifier si pageId se trouve deja dans le buffPool
         for (int i = 0; i < buffPool.length; i++) {
             if (buffPool[i].getPageId().equals(pageId)) {
+                System.out.println("La page existe");
                 buffPool[i].incrementerPinCount();
-
                 return buffPool[i].getBuff();
             }
         }
@@ -44,6 +53,7 @@ public class BufferManager {
                 buffPool[i].setPinCount(1);
                 buffPool[i].setFlagDirty(false);
                 discManager.readPage(pageId, buffPool[i].getBuff());
+                buffPool[i].toString();
                 return buffPool[i].getBuff();
             }
         }
@@ -52,12 +62,16 @@ public class BufferManager {
                 lru.add(buffPool[i]);
             }
         }
+        /*On cherche le plus petit TS
+         * On suppose que la premiere case a le plus petit TS 
+         * On change dans la boucle si on trouve un plus petit
+         */
         int min = lru.get(0).getTs();
+        pRemplacee=lru.get(0);
         for (int j = 1; j < lru.size(); j++) {
             if (min > lru.get(j).getTs()) {
                 min = lru.get(j).getTs();
-
-                pRemplacee.setBuff(lru.get(j).getBuff());
+                pRemplacee = lru.get(j);
             }
         }
         if (pRemplacee.getFlagDirty() == true) {
@@ -71,6 +85,7 @@ public class BufferManager {
                 buffPool[i].setPinCount(1);
                 buffPool[i].setFlagDirty(false);
                 discManager.readPage(pageId, buffPool[i].getBuff());  
+                buffPool[i].toString();
                 trouvee=true; 
             }
             i++;
@@ -94,6 +109,7 @@ public class BufferManager {
                 tsGlobal++;
                 buffPool[i].setTs(tsGlobal);
                 buffPool[i].decrementerPinCount();
+                buffPool[i].toString();
                 if(valdirty){
                     buffPool[i].setFlagDirty(true);
                 } else {
@@ -107,16 +123,28 @@ public class BufferManager {
      * ecriture des pages modifiees sur le disque
      * remise a 0 des flags/ informartions et contenus des buffers
      */
-    public void flushAll() throws FileNotFoundException, IOException {
+    public void flushAll() throws  IOException {
         for (Frame frame : this.buffPool) {
             if (frame.getFlagDirty()) {
                 this.discManager.writePage(frame.getPageId(), frame.getBuff());
             }
-            frame.setPageId(new PageId(-1, 0));
+            frame.setPageId(new PageId(0, -1));
             frame.setPinCount(0);
-            frame.setFlagDirty(false);
+            frame.setFlagDirty(false); 
         }
 
     }
 
+    public void buffPoolContenu(){
+        System.out.println("Contenu du buffer manager");
+        for(int i= 0 ; i<buffPool.length; i++){
+            if(buffPool[i].getPageId().pageIdx == -1){
+                System.out.println("Case vide\n");
+            }else{
+                System.out.println(buffPool[i]+"\n");
+            }
+        }
+    }
+
+    
 }

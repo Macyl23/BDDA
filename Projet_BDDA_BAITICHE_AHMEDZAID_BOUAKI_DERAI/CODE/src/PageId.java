@@ -8,4 +8,8 @@ public class PageId {
         this.fileIdx=fIdx;
         this.pageIdx=pIdx;
     }
+
+    public String toString(){
+        return pageIdx + " dans le fichier "+ fileIdx;
+    }
 }

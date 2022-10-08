@@ -5,11 +5,11 @@ public class ColInfo{
     private String typeInteger;
     private String typeReal;
     private String typeVarChar;
-    public ColInfo(String nom,String typeInteger,String TypeReal,String typeVarChar){
+    public ColInfo(String nom,String typeInteger,String tr,String tvc){
         this.nom = nom;
         this.typeInteger = typeInteger;
-        this.typeReal = typeReal;
-        this.typeVarChar = typeVarChar;
+        this.typeReal = tr;
+        this.typeVarChar = tvc;
 
     }    
     public void init(){};

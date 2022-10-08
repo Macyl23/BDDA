@@ -17,7 +17,7 @@ public class RelationInfo {
         StringBuffer cI = new StringBuffer();
       
         for(ColInfo c : infoColonne) {
-            cI.append("le nom de la relation" + c.getNomColonnes() + " TypeInteger : " + c.getTypeInteger() + " typeReal : " + c.getTypeReal() + " typeVarchar : " + c.getTypeVarChar()) ;
+            cI.append("le nom de la relation" + nomRelation + " TypeInteger : " + c.getTypeInteger() + " typeReal : " + c.getTypeReal() + " typeVarchar : " + c.getTypeVarChar()) ;
         }
         return cI.toString();
     }
