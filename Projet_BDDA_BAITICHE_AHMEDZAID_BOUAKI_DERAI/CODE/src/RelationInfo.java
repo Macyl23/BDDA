@@ -1,23 +1,28 @@
 import java.util.ArrayList;
-import java.util.Vector;
 
 public class RelationInfo {
     private String nomRelation;
     private int nbColonnes;
-    private Vector<ColInfo> infoColonne;
+    private ArrayList<ColInfo> infoColonne;
 
 
+    public ArrayList<ColInfo> getInfoColonne() {
+        return infoColonne;
+    }
+    public void setInfoColonne(ArrayList<ColInfo> infoColonne) {
+        this.infoColonne = infoColonne;
+    }
     public RelationInfo(String nomRelation, int nbColonnes){
         this.nomRelation= nomRelation;
         this.nbColonnes= nbColonnes;
-        this.infoColonne= new Vector<ColInfo>();
+        this.infoColonne= new ArrayList<ColInfo>();
     }
     // recuperer les valeurs present dans le vector infoColonne
     public String getInfoCol() {
         StringBuffer cI = new StringBuffer();
       
         for(ColInfo c : infoColonne) {
-            cI.append("le nom de la relation" + nomRelation + " TypeInteger : " + c.getTypeInteger() + " typeReal : " + c.getTypeReal() + " typeVarchar : " + c.getTypeVarChar()) ;
+            cI.append("le nom de la relation" + nomRelation + " Type: " + c.getType()) ;
         }
         return cI.toString();
     }
@@ -35,6 +40,7 @@ public class RelationInfo {
     public int getNbColonnes() {
         return nbColonnes;
     }
+    
     
 
 
