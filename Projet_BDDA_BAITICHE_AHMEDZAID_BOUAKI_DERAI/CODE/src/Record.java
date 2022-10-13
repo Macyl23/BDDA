@@ -4,6 +4,7 @@ import java.util.ArrayList;
 public class Record {
     private RelationInfo relInfo;
     private ArrayList<String> values;
+    private static int wSize;
 
     public Record(RelationInfo relation) {
         this.relInfo = relation;
@@ -39,20 +40,25 @@ public class Record {
                 case "INTEGER":
                     tempInt = Integer.parseInt(values.get(i));
                     buff.putInt(tempInt);
+                    wSize=wSize+4;
                     break;
 
                 case "REAL":
                     tempFloat = Float.parseFloat(values.get(i));
                     buff.putFloat(tempFloat);
+                    wSize=wSize+4;
                     break;
                default:
                     for(int j=0 ; j<values.get(i).length() ; j++){
                         buff.putChar(values.get(i).charAt(j));
                     }
+                    wSize=wSize+values.get(i).length();
                     break;
 
             }
         }
     }
-
+    public int getwrittenSize(){
+        return wSize; 
+    }
 }
