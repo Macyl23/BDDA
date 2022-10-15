@@ -12,10 +12,10 @@ public class RelationInfo {
     public void setInfoColonne(ArrayList<ColInfo> infoColonne) {
         this.infoColonne = infoColonne;
     }
-    public RelationInfo(String nomRelation, int nbColonnes){
+    public RelationInfo(String nomRelation, int nbColonnes, ArrayList<ColInfo> a){
         this.nomRelation= nomRelation;
         this.nbColonnes= nbColonnes;
-        this.infoColonne= new ArrayList<ColInfo>();
+        this.infoColonne= a;
     }
     // recuperer les valeurs present dans le vector infoColonne
     public String getInfoCol() {
