@@ -1,6 +1,8 @@
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -11,7 +13,13 @@ public class Catalog implements Serializable {
     private ArrayList<RelationInfo> tableauRelationInfo;
     private int compteRelation;
 
-    public void init() {
+    public void init() throws ClassNotFoundException, IOException {
+        File f = new File(DBParams.DBPath + "/Catalog.sy");
+        FileInputStream fInput = new FileInputStream(f);
+        ObjectInputStream in = new ObjectInputStream(fInput);
+        in.readObject();
+        fInput.close();
+        in.close();
     }
 
     public void finish() throws IOException {
