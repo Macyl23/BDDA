@@ -49,6 +49,11 @@ public class RelationInfo {
     public int getNbColonnes() {
         return nbColonnes;
     }
+
+
+    public PageId getHeaderPageId() {
+        return headerPageId;
+    }
     
     
 
