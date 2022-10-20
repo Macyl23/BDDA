@@ -74,7 +74,7 @@ public class Record {
 
     }
 
-    void readFromBuffer(ByteBuffer buff, int pos) {
+    public void readFromBuffer(ByteBuffer buff, int pos) {
         String type;
         int tempInt, tailleChaine, i, j,k;
         float tempFloat;
