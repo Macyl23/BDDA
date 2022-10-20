@@ -14,6 +14,11 @@ public class RelationInfo {
         this.infoColonne= a;
         this.headerPageId=pId;
     }
+    public RelationInfo(String nomRelation, int nbColonnes, ArrayList<ColInfo> a){
+        this.nomRelation= nomRelation;
+        this.nbColonnes= nbColonnes;
+        this.infoColonne= a;
+    }
 
     // recupere la tableau de type ColInfo
         public ArrayList<ColInfo> getInfoColonne() {
