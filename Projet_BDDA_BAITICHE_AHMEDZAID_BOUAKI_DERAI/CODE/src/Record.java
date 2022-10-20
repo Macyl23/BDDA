@@ -40,13 +40,11 @@ public class Record {
         for (int i = 0; i < values.size() && k <= relInfo.getNbColonnes() * 4; i++, k += 4) {
             type = relInfo.getInfoColonne().get(i).getType();
             buff.position(k);
-
-            buff.putInt(relInfo.getNbColonnes() * 4 + 4 + sizeValeur);
+            buff.putInt((1+relInfo.getNbColonnes()) * 4  + sizeValeur);
             buff.position(pos + sizeValeur);
             switch (type) {
                 case "INTEGER":
                     tempInt = Integer.parseInt(values.get(i));
-
                     buff.putInt(tempInt);
                     sizeValeur += 4;
                     break;
@@ -58,20 +56,17 @@ public class Record {
                     break;
                 default:
                     for (int j = 0;   j < values.get(i).length() ; j++) {
-
                         buff.putChar(values.get(i).charAt(j));
                     }
                     sizeValeur += 2 * values.get(i).length();
                     break;
-
             }
-            System.out.println("buffer : " + Arrays.toString(buff.array()));
 
         }
         buff.position(k);
-        buff.putInt(relInfo.getNbColonnes() * 4 + 4 + sizeValeur);
+        buff.putInt((1+relInfo.getNbColonnes()) * 4  + sizeValeur);
+        sizeValeur += (relInfo.getNbColonnes()+1)*4;
         System.out.println("buffer : " + Arrays.toString(buff.array()));
-
     }
 
     public void readFromBuffer(ByteBuffer buff, int pos) {
@@ -84,7 +79,7 @@ public class Record {
         // switch
         for (k = 0; k < relInfo.getNbColonnes(); k++) {
             type = relInfo.getInfoColonne().get(k).getType();
-            buff.position(pos+getWrittenSize());
+            buff.position(pos+recordSizeFromValues());
             switch (type) {
                 case "INTEGER":
                     tempInt = buff.getInt();
@@ -97,16 +92,19 @@ public class Record {
                     break;
 
                 default:
-                    tailleChaine = Integer.parseInt(type.substring(7));
-                    tempVarchar = new char[tailleChaine];
-                    for (i = pos+getWrittenSize(), j = 0; i < pos+tailleChaine*2 ; i+=2, j++) {
+                    tailleChaine = buff.getInt((k+1)*4) - buff.getInt(k*4);
+                    tempVarchar = new char[tailleChaine/2];
+                    for (i = pos+recordSizeFromValues(), j = 0; i < pos+recordSizeFromValues()+ tailleChaine ; i+=2, j++) {
                         // System.out.println(tempVarchar);
-                        tempVarchar[j] = buff.getChar();
+                        tempVarchar[j] = buff.getChar(i);
                     }
                     chaine = new String(tempVarchar);
                     values.add(chaine);
+                    System.out.println(values.get(k).length());
+
                     break;
             }
+
 
         }
 
@@ -114,6 +112,10 @@ public class Record {
 
 
     public int getWrittenSize(){
+        return sizeValeur;
+    }
+
+    public int recordSizeFromValues(){
         String type;
         int tailleChaine, writtenSize=0;
         for(int i=0 ; i<values.size() ; i++){
@@ -122,12 +124,11 @@ public class Record {
                 case "INTEGER":
                     writtenSize += 4;
                     break;
-
                 case "REAL":
                     writtenSize += 4;
                     break;
                 default:
-                    tailleChaine = Integer.parseInt(type.substring(7));
+                    tailleChaine = values.get(i).length();
                     writtenSize +=  tailleChaine*2;
                     break;
 
