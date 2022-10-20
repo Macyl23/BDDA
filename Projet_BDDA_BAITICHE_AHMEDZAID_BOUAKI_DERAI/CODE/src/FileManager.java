@@ -21,9 +21,35 @@ public class FileManager  {
         return pageIdFile;
    }
 
-   public PageId addDataPage(RelationInfo r){
-     return null;
-   }
+    public PageId addDataPage(RelationInfo r) throws IOException {
+    PageId pid = DiskManager.leDiskManager.allocPage();
+    ByteBuffer bm = BufferManager.leBufferManager.getPage(pid); // Data Page
+
+    /* DATA PAGE */
+    // Ecrire 8 octets de 0
+    bm.position((DBParams.pageSize) - 8);
+    for (int i = 0; i < 2; i++) {
+      bm.putInt(0);
+    }
+    BufferManager.leBufferManager.freePage(pid, true);
+
+    /* HEADER PAGE */
+    // Incrémenter data page
+    ByteBuffer bufferHeaderPage = BufferManager.leBufferManager.getPage(r.getHeaderPageId());
+    bufferHeaderPage.putInt(0, bufferHeaderPage.getInt() + 1);
+
+    // Rechercher l'espace disponbile
+    int dataPage = bufferHeaderPage.getInt();
+    int espaceDispo = dataPage * 12 + 4;
+
+    // Ajouter l'id data page et l'espace disponible
+    bufferHeaderPage.putInt(espaceDispo, pid.pageIdx);
+    bufferHeaderPage.putInt(espaceDispo + 4, pid.fileIdx);
+    bufferHeaderPage.putInt(DBParams.pageSize - 8);
+    BufferManager.leBufferManager.freePage(pid, true);
+
+    return pid;
+  }
 // Cette méthode doit retourner, pour la relation désignée par relInfo, le PageId d’une page de données
 //sur laquelle il reste assez de place pour insérer le record ; si une telle page n’existe pas, la méthode
 //retournera null.
