@@ -28,7 +28,7 @@ public class DiskManager {
 		count++;
 		int i = 0;
 		int page = 0;
-		File f = new File(DBParams.DBPath + "/f" +i + ".bdda");
+		File f = new File(DBParams.DBPath + ""+File.separator+"f" +i + ".bdda");
 		boolean pageAvailaible = false;
 
 		if(pageDisponible.size() != 0){
@@ -36,7 +36,6 @@ public class DiskManager {
 			pageDisponible.remove(0);
 			return pid;
 		}
-		System.out.println(f.exists());
 		while (f.exists() && !pageAvailaible) {
 			for (int j = 0; j < DBParams.maxPagesPerFile * 4; page++, j += DBParams.pageSize) {
 				if (f.length() == j) {

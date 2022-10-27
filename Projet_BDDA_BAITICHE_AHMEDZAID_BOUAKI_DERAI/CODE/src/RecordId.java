@@ -2,6 +2,10 @@ public class RecordId {
     private PageId pageId;
     private int slotIdx;
 
+    public RecordId(PageId pid, int slot){
+        this.pageId=pid;
+        this.slotIdx=slot;
+    }
     public PageId getPageId() {
         return pageId;
     }
