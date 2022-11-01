@@ -1,6 +1,8 @@
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -11,7 +13,15 @@ public class Catalog implements Serializable {
     private ArrayList<RelationInfo> tableauRelationInfo;
     private int compteRelation;
 
-    public void init() {
+    public void init() throws ClassNotFoundException, IOException {
+        File f = new File(DBParams.DBPath + "/Catalog.sy");
+        if (f.exists()) {
+            FileInputStream fInput = new FileInputStream(f);
+            ObjectInputStream in = new ObjectInputStream(fInput);
+            in.readObject();
+            fInput.close();
+            in.close();
+        }
     }
 
     public void finish() throws IOException {
@@ -28,6 +38,8 @@ public class Catalog implements Serializable {
         compteRelation++;
     }
 
+    // reucperer l'indice ou la relaton passer en parametres est presente dans le
+    // tableau tableauRelation
     public RelationInfo getRelationInfo(String relation) {
         for (int i = 0; i < tableauRelationInfo.size(); i++) {
             if (tableauRelationInfo.get(i).getNomRelation().equals(relation)) {
@@ -37,6 +49,7 @@ public class Catalog implements Serializable {
         return null;
     }
 
+    // sauvegarder un catalog
     private void sauvegarder() throws IOException {
         File f = new File(DBParams.DBPath + "/Catalog.sy");
         FileOutputStream fOutput = new FileOutputStream(f);

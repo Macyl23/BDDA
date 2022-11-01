@@ -4,6 +4,7 @@ public class RelationInfo {
     private String nomRelation;
     private int nbColonnes;
     private ArrayList<ColInfo> infoColonne;
+    private PageId headerPageId;
 
 
     public ArrayList<ColInfo> getInfoColonne() {
@@ -13,9 +14,17 @@ public class RelationInfo {
         this.infoColonne = infoColonne;
     }
     public RelationInfo(String nomRelation, int nbColonnes){
+   
+    public RelationInfo(String nomRelation, int nbColonnes, ArrayList<ColInfo> a, PageId pId){
         this.nomRelation= nomRelation;
         this.nbColonnes= nbColonnes;
-        this.infoColonne= new ArrayList<ColInfo>();
+        this.infoColonne= a;
+        this.headerPageId=pId;
+    }
+    public RelationInfo(String nomRelation, int nbColonnes, ArrayList<ColInfo> a){
+        this.nomRelation= nomRelation;
+        this.nbColonnes= nbColonnes;
+        this.infoColonne= a;
     }
     // recuperer les valeurs present dans le vector infoColonne
     public String getInfoCol() {
@@ -39,6 +48,11 @@ public class RelationInfo {
     }
     public int getNbColonnes() {
         return nbColonnes;
+    }
+
+
+    public PageId getHeaderPageId() {
+        return headerPageId;
     }
     
     
