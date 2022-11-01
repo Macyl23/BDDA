@@ -1,5 +1,5 @@
 public class ColInfo {
-    // tout les instances de cette classe sont des chaines pour une meilleur gestion
+    // toutes les instances de cette classe sont des chaines pour une meilleur gestion
     // indication de la prof
     //  mettre dans cette classe le nom et le type de la colonne
     
