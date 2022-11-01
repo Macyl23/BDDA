@@ -47,8 +47,9 @@ public class CreateTableCommand {
     public void execute() throws IOException{
         PageId HeaderPid = FileManager.leFileManager.createNewHeaderPage();
         ArrayList<ColInfo> liste= new ArrayList<>(nombreColonnes);
+        ColInfo col;
         for(int i=0; i<nomColonnes.size(); i++){
-            ColInfo col= new ColInfo(nomColonnes.get(i), typeColonnes.get(i));
+            col= new ColInfo(nomColonnes.get(i), typeColonnes.get(i));
             liste.add(col);
         }
         RelationInfo relation = new RelationInfo(this.nomRelation, this.nombreColonnes,liste, HeaderPid);

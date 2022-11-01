@@ -6,11 +6,17 @@ public class Record {
     private RelationInfo relInfo;
     public ArrayList<String> values;
     public int sizeValeur;
+    public RecordId rid;
 
     public Record(RelationInfo relation) {
         this.relInfo = relation;
         values = new ArrayList<>();
         sizeValeur=0;
+    }
+
+    public Record(RelationInfo relation, ArrayList<String> values){
+        this.relInfo=relation;
+        this.values=values;
     }
 
     public RelationInfo getRelInfo() {
