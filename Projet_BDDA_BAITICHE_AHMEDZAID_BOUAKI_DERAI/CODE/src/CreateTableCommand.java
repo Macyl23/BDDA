@@ -1,4 +1,6 @@
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class CreateTableCommand {
     private String nomRelation;
@@ -37,6 +39,20 @@ public class CreateTableCommand {
             this.nomColonnes.add(name);
             this.typeColonnes.add(type);
         }
+    }
+     /**
+     * @throws IOException
+     * 
+     */
+    public void execute() throws IOException{
+        PageId HeaderPid = FileManager.leFileManager.createNewHeaderPage();
+        ArrayList<ColInfo> liste= new ArrayList<>(nombreColonnes);
+        for(int i=0; i<nomColonnes.size(); i++){
+            ColInfo col= new ColInfo(nomColonnes.get(i), typeColonnes.get(i));
+            liste.add(col);
+        }
+        RelationInfo relation = new RelationInfo(this.nomRelation, this.nombreColonnes,liste, HeaderPid);
+        Catalog.leCatalog.addRelationInfo(relation);
     }
 
     /**
@@ -100,8 +116,5 @@ public class CreateTableCommand {
     }
 
 
-    /**
-     * 
-     */
-    //public void execute();
+
 }
