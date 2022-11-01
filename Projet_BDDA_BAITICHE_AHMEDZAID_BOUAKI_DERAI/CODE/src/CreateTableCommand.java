@@ -1,6 +1,5 @@
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class CreateTableCommand {
     private String nomRelation;
@@ -20,8 +19,9 @@ public class CreateTableCommand {
 
     /**
      * @param saisie
-     * methode qui permet de dechiffrer la commande 
+     * methode qui permet de dechiffrer la saisie de commande 
      * rentree par l'utilisateur
+     * et permet de recuperer les differentes infos
      */
     private void parse(String saisie) {
         String [] chaineSplit;
@@ -42,7 +42,7 @@ public class CreateTableCommand {
     }
      /**
      * @throws IOException
-     * 
+     * excute permet d'executer la commande 
      */
     public void execute() throws IOException{
         PageId HeaderPid = FileManager.leFileManager.createNewHeaderPage();
