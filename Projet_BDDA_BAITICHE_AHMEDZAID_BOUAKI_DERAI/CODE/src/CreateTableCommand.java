@@ -10,11 +10,10 @@ public class CreateTableCommand {
      * @param nomRelation mom de la relation 
      * @param nombreColonnes nombre des colonnes 
      */
-    public CreateTableCommand(String saisie, String nomRelation, int nombreColonnes) {
-        this.nomRelation=nomRelation;
-        this.nombreColonnes=nombreColonnes;
+    public CreateTableCommand(String saisie) {
         nomColonnes= new ArrayList<>();
-        typeColonnes= new ArrayList<>();
+        typeColonnes=new ArrayList<>();
+        parse(saisie);
     }
 
     /**
@@ -23,10 +22,9 @@ public class CreateTableCommand {
      * rentree par l'utilisateur
      */
     private void parse(String saisie) {
-        String saisieChaine= saisie.substring(0, saisie.length()+1);
         String [] chaineSplit;
         String [] colonnes;
-        chaineSplit= saisieChaine.split(" ");
+        chaineSplit= saisie.split(" ");
         colonnes= chaineSplit[3].split(",");
         this.nomRelation= chaineSplit[2];
         this.nombreColonnes= colonnes.length;
