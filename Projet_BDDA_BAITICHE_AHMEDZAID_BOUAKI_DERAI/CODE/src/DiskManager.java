@@ -112,7 +112,13 @@ public class DiskManager {
 		return count;
 	}
 
-
+	/**
+	 * a verifier!!!
+	 */
+	public void menageDiscManager(){
+		pageDisponible.clear();
+		count=0;
+	}
 	
 	
 }

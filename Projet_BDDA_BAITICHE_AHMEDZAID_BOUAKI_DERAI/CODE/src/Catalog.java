@@ -62,5 +62,11 @@ public class Catalog implements Serializable {
         fOutput.close();
         out.close();
     }
+    /**
+     * reintialiser toutes les valeurs
+     */
+    public void reinitialiser(){
+        tableauRelationInfo.clear();
+    }
 
 }
