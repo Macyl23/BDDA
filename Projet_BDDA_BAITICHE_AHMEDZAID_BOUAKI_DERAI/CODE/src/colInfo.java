@@ -1,5 +1,5 @@
 public class ColInfo {
-    // tout les instances de cette classe sont des chaines pour une meilleur gestion
+    // toutes les instances de cette classe sont des chaines pour une meilleur gestion
     // indication de la prof
     private String nom;
     private String type;

@@ -146,5 +146,17 @@ public class BufferManager {
         }
     }
 
+    /**
+     * reintialiser toutes les valeurs du buffer manager 
+     */
+    public void reinitialiser(){
+        for(Frame frame: buffPool){
+            frame.setPageId(new PageId(-1,0));
+            frame.setPinCount(0);
+            frame.setFlagDirty(false);
+            frame.setBuff(ByteBuffer.allocate(DBParams.pageSize));
+            frame.setTs(-1);
+        }
+    }
     
 }
