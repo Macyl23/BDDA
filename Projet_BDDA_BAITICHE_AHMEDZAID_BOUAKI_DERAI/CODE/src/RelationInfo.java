@@ -13,7 +13,6 @@ public class RelationInfo {
     public void setInfoColonne(ArrayList<ColInfo> infoColonne) {
         this.infoColonne = infoColonne;
     }
-    public RelationInfo(String nomRelation, int nbColonnes){
    
     public RelationInfo(String nomRelation, int nbColonnes, ArrayList<ColInfo> a, PageId pId){
         this.nomRelation= nomRelation;

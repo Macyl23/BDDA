@@ -6,8 +6,8 @@ public class DBManager {
 
     public static DBManager leDBManager = new DBManager();
 
-    public void init() throws IOException{
-        Catalog.init();
+    public void init() throws IOException, ClassNotFoundException{
+        Catalog.leCatalog.init();
 
         //La methode init()  dans BufferManager est vide pour l'instant
         BufferManager.leBufferManager.init(); 
@@ -15,17 +15,17 @@ public class DBManager {
         //DiskManager n'a pas de methode init()
     }
 
-    public void finish(){
-        Catalog.finish();
+    public void finish() throws IOException{
+        Catalog.leCatalog.finish();
         BufferManager.leBufferManager.flushAll();
 
         //DiskManager n'a pas de methode finish()
     }
 
-    public void processCommand(String [] commande){
+    public void processCommand(String  commande){
         //Pour l'instant, vide
-        switch(commande[0]){
-            case "CREAT":
+        switch(commande){
+            case "CREATE":
             break;
             case "DROPDB":
             break;
