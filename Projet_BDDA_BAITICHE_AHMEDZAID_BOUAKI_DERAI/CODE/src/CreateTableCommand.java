@@ -54,6 +54,7 @@ public class CreateTableCommand {
         }
         RelationInfo relation = new RelationInfo(this.nomRelation, this.nombreColonnes,liste, HeaderPid);
         Catalog.leCatalog.addRelationInfo(relation);
+        Catalog.leCatalog.afficheRelationAjoute();
     }
 
     /**

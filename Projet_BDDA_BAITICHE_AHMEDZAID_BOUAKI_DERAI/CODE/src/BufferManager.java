@@ -5,7 +5,6 @@ import java.util.ArrayList;
 public class BufferManager {
     public static BufferManager leBufferManager = new BufferManager();
     private Frame[] buffPool;
-    private DiskManager discManager;
     ArrayList<Frame> lru = new ArrayList<Frame>();
     Frame pRemplacee = new Frame();
     private static int tsGlobal=0;
@@ -13,7 +12,6 @@ public class BufferManager {
     private BufferManager() {
         
         this.buffPool = new Frame[DBParams.frameCount];       
-        this.discManager = DiskManager.leDiskManager;
 
     }
     
@@ -52,7 +50,7 @@ public class BufferManager {
                 buffPool[i].setPageId(pageId);
                 buffPool[i].setPinCount(1);
                 buffPool[i].setFlagDirty(false);
-                discManager.readPage(pageId, buffPool[i].getBuff());
+                DiskManager.leDiskManager.readPage(pageId, buffPool[i].getBuff());
                 buffPool[i].toString();
                 return buffPool[i].getBuff();
             }
@@ -75,7 +73,7 @@ public class BufferManager {
             }
         }
         if (pRemplacee.getFlagDirty() == true) {
-            this.discManager.writePage(pRemplacee.getPageId(), pRemplacee.getBuff());
+            DiskManager.leDiskManager.writePage(pRemplacee.getPageId(), pRemplacee.getBuff());
         }
         int i=0;
         boolean trouvee=false;
@@ -84,7 +82,7 @@ public class BufferManager {
                 buffPool[i].setPageId(pageId);
                 buffPool[i].setPinCount(1);
                 buffPool[i].setFlagDirty(false);
-                discManager.readPage(pageId, buffPool[i].getBuff());  
+                DiskManager.leDiskManager.readPage(pageId, buffPool[i].getBuff());  
                 buffPool[i].toString();
                 trouvee=true; 
             }
@@ -126,9 +124,9 @@ public class BufferManager {
     public void flushAll() throws  IOException {
         for (Frame frame : this.buffPool) {
             if (frame.getFlagDirty()) {
-                this.discManager.writePage(frame.getPageId(), frame.getBuff());
+                DiskManager.leDiskManager.writePage(frame.getPageId(), frame.getBuff());
             }
-            frame.setPageId(new PageId(0, -1));
+            frame.setPageId(new PageId(-1, 0));
             frame.setPinCount(0);
             frame.setFlagDirty(false); 
         }
@@ -138,7 +136,7 @@ public class BufferManager {
     public void buffPoolContenu(){
         System.out.println("Contenu du buffer manager");
         for(int i= 0 ; i<buffPool.length; i++){
-            if(buffPool[i].getPageId().pageIdx == -1){
+            if(buffPool[i].getPageId().fileIdx == -1){
                 System.out.println("Case vide\n");
             }else{
                 System.out.println(buffPool[i]+"\n");
@@ -150,6 +148,7 @@ public class BufferManager {
      * reintialiser toutes les valeurs du buffer manager 
      */
     public void reinitialiser(){
+        initBuffPool();
         for(Frame frame: buffPool){
             frame.setPageId(new PageId(-1,0));
             frame.setPinCount(0);

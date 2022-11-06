@@ -1,6 +1,5 @@
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class Record {
     private RelationInfo relInfo;
@@ -72,7 +71,6 @@ public class Record {
         buff.position(k);
         buff.putInt((1+relInfo.getNbColonnes()) * 4  + sizeValeur);
         sizeValeur += (relInfo.getNbColonnes()+1)*4;
-        System.out.println("buffer : " + Arrays.toString(buff.array()));
     }
 
     public void readFromBuffer(ByteBuffer buff, int pos) {

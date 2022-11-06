@@ -1,6 +1,9 @@
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class RelationInfo {
+public class RelationInfo implements Serializable {
+    private static final long serialVersionUID = 1234L;
+
     private String nomRelation;
     private int nbColonnes;
     private ArrayList<ColInfo> infoColonne;
@@ -36,7 +39,7 @@ public class RelationInfo {
     }
     public String toString() {
        
-        StringBuffer sb = new StringBuffer("nom relation : " + this.nomRelation +  " nbColonnes " + this.nbColonnes + getInfoCol());
+        StringBuffer sb = new StringBuffer("nom relation : " + this.nomRelation +  "\nnbColonnes " + this.nbColonnes +"\n"+ getInfoCol());
         return sb.toString();
     }
     public void afficher() {

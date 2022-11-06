@@ -8,28 +8,28 @@ public class DBManager {
 
     public void init() throws IOException, ClassNotFoundException{
         Catalog.leCatalog.init();
-
-        //La methode init()  dans BufferManager est vide pour l'instant
         BufferManager.leBufferManager.init(); 
 
-        //DiskManager n'a pas de methode init()
     }
 
     public void finish() throws IOException{
         Catalog.leCatalog.finish();
         BufferManager.leBufferManager.flushAll();
-
-        //DiskManager n'a pas de methode finish()
     }
 
-    public void processCommand(String  commande){
-        //Pour l'instant, vide
-        switch(commande){
+    public void processCommand(String  commande) throws IOException{
+        String mots[] = commande.split(" ");
+        switch(mots[0]){
             case "CREATE":
+                CreateTableCommand c = new CreateTableCommand(commande);
+                c.execute();
             break;
             case "DROPDB":
+                DropDB.execute();
             break;
             case "INSERT":
+                InsertCommand i = new InsertCommand(commande);
+                i.execute();
             break;
             case "SELECT":
             break;

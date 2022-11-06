@@ -8,7 +8,7 @@ public class Frame {
     private  int ts;
     //constructeur class Frame
     public Frame(){
-        pageId= new PageId(0, -1);
+        pageId= new PageId(-1, 0);
         pinCount=0;
         flagDirty=false;
         buff= ByteBuffer.allocate(DBParams.pageSize);

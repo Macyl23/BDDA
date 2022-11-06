@@ -1,5 +1,8 @@
+import java.io.Serializable;
 
-public class PageId {
+public class PageId implements  Serializable {
+    private static final long serialVersionUID = 1234L;
+
     public int fileIdx;
     public int pageIdx;
 

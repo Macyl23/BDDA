@@ -1,6 +1,10 @@
-public class ColInfo {
+import java.io.Serializable;
+
+public class ColInfo implements Serializable {
     // toutes les instances de cette classe sont des chaines pour une meilleur gestion
     // indication de la prof
+    private static final long serialVersionUID = 1234L;
+
     private String nom;
     private String type;
 

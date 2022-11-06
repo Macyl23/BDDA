@@ -1,7 +1,6 @@
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class FileManager {
 
@@ -22,7 +21,6 @@ public class FileManager {
     BufferManager.leBufferManager.initBuffPool();
     ByteBuffer bufferHeaderPage = BufferManager.leBufferManager.getPage(pageIdFile);
     bufferHeaderPage.putInt(0,0);
-    System.out.println("buffer : " + Arrays.toString(bufferHeaderPage.array()));
 
     // DiskManager.leDiskManager.writePage(pageIdFile, b.putInt(0));
     BufferManager.leBufferManager.freePage(pageIdFile, true);
@@ -38,7 +36,6 @@ public class FileManager {
     bufferDataPage.putInt((DBParams.pageSize) - 8,0);
     bufferDataPage.putInt((DBParams.pageSize) - 4,0);
 
-    System.out.println("DATA PAGE : " + Arrays.toString(bufferDataPage.array()));
     BufferManager.leBufferManager.freePage(pid, true);
 
     
@@ -59,7 +56,6 @@ public class FileManager {
     // Incrémenter data page
     bufferHeaderPage.putInt(0, bufferHeaderPage.getInt() + 1);
 
-    System.out.println("HEADER PAGE : " + Arrays.toString(bufferHeaderPage.array()));
 
     BufferManager.leBufferManager.freePage(pid, true);
 

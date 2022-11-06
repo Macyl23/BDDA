@@ -15,8 +15,10 @@ public class InsertCommand {
     private void parse(String saisie) throws IOException {
         String [] chaineSplit;
         String [] valeurs;
+        String chaineTemp;
         chaineSplit= saisie.split(" ");
-        valeurs= chaineSplit[4].split(",");
+        chaineTemp = chaineSplit[4].substring(1,chaineSplit[4].length()-1);
+        valeurs= chaineTemp.split(",");
         this.nomRelation= chaineSplit[2];
 
         for(String valeur: valeurs ){
@@ -27,7 +29,6 @@ public class InsertCommand {
 
     public void execute() throws IOException{
         Record r = new Record(Catalog.leCatalog.getRelationInfo(nomRelation),valeursRecords);
-        RecordId rid = FileManager.leFileManager.insertRecordIntoRelation(r);
-        r.rid = rid;
+        r.rid = FileManager.leFileManager.insertRecordIntoRelation(r);
     }
 }

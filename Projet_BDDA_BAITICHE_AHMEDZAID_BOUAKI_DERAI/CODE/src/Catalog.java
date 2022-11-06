@@ -10,8 +10,14 @@ import java.util.ArrayList;
 public class Catalog implements Serializable {
     // tableau de type RelationInfo
     private static final long serialVersionUID = 1234L;
-    private ArrayList<RelationInfo> tableauRelationInfo;
+    private ArrayList<RelationInfo> tableauRelationInfo=new ArrayList<>();
     private int compteRelation;
+
+    private Catalog() {
+    }
+    public static Catalog leCatalog = new Catalog();
+    
+
 
     public void init() throws ClassNotFoundException, IOException {
         File f = new File(DBParams.DBPath + "/Catalog.sy");
@@ -28,10 +34,8 @@ public class Catalog implements Serializable {
         sauvegarder();
     };
 
-    public static Catalog leCatalog = new Catalog();
 
-    private Catalog() {
-    }
+    
 
     public void addRelationInfo(RelationInfo ri) {
         tableauRelationInfo.add(ri);
@@ -49,21 +53,33 @@ public class Catalog implements Serializable {
         return null;
     }
 
-    // sauvegarder un catalog
-    private void sauvegarder() throws IOException {
-        File f = new File(DBParams.DBPath + "/Catalog.sy");
-        FileOutputStream fOutput = new FileOutputStream(f);
-        ObjectOutputStream out = new ObjectOutputStream(fOutput);
-        out.writeObject(this);
-        out.flush();
-        fOutput.close();
-        out.close();
-    }
     /**
      * reintialiser toutes les valeurs
      */
     public void reinitialiser(){
         tableauRelationInfo.clear();
+    }
+
+    public void afficheRelationAjoute(){
+        for(int i=0 ; i<tableauRelationInfo.size();i++){
+            tableauRelationInfo.get(i).toString();
+        }
+    }
+
+    // sauvegarder un catalog
+    private void sauvegarder() throws IOException {
+        File f = new File(DBParams.DBPath + "/Catalog.sy");
+        try{
+            FileOutputStream fOutput = new FileOutputStream(f);
+            ObjectOutputStream out = new ObjectOutputStream(fOutput);
+            out.writeObject(this);
+            out.flush();
+            fOutput.close();
+            out.close();
+        }catch(IOException e){
+            e.printStackTrace();
+        }
+        
     }
 
 }
