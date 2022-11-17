@@ -21,6 +21,10 @@ public class SelectCommand{
     public  void execute() throws IOException{
         if(commande.length > 5){
             /* Des critères ont été entrées  */
+            ArrayList<String> 
+            for(int i=0; i<commande[5].length(); i++){
+
+            }
         }else{
             records=FileManager.leFileManager.getAllRecords(Catalog.leCatalog.getRelationInfo(nomRelation));
             afficherRecords();
