@@ -13,6 +13,12 @@ public class RelationInfo implements Serializable {
     public ArrayList<ColInfo> getInfoColonne() {
         return infoColonne;
     }
+    public void afficherInfoColonne(){
+
+        for(int i=0 ; i<infoColonne.size();i++){
+            infoColonne.get(i).toString();
+        }
+    }
     public void setInfoColonne(ArrayList<ColInfo> infoColonne) {
         this.infoColonne = infoColonne;
     }
@@ -39,7 +45,7 @@ public class RelationInfo implements Serializable {
     }
     public String toString() {
        
-        StringBuffer sb = new StringBuffer("nom relation : " + this.nomRelation +  "\nnbColonnes " + this.nbColonnes +"\n"+ getInfoCol());
+        StringBuffer sb = new StringBuffer("nom relation : " + this.nomRelation +  "\nnbColonnes " + this.nbColonnes +"\n");
         return sb.toString();
     }
     public void afficher() {

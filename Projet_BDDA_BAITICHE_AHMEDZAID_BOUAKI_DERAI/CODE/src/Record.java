@@ -4,13 +4,12 @@ import java.util.ArrayList;
 public class Record {
     private RelationInfo relInfo;
     public ArrayList<String> values;
-    public int sizeValeur;
+    public static int sizeValeur;
     public RecordId rid;
 
     public Record(RelationInfo relation) {
         this.relInfo = relation;
-        values = new ArrayList<>();
-        sizeValeur=0;
+        this.values = new ArrayList<>();
     }
 
     public Record(RelationInfo relation, ArrayList<String> values){
@@ -41,57 +40,58 @@ public class Record {
         int tempInt;
         float tempFloat;
         int  k = 0;
-
+        int debutValeurs= (1+relInfo.getNbColonnes() * 4);
+        int tailleValeurs=0;
         for (int i = 0; i < values.size() && k <= relInfo.getNbColonnes() * 4; i++, k += 4) {
             type = relInfo.getInfoColonne().get(i).getType();
-            buff.position(k);
-            buff.putInt((1+relInfo.getNbColonnes()) * 4  + sizeValeur);
-            buff.position(pos + sizeValeur);
+            buff.putInt(pos+k,(1+relInfo.getNbColonnes()) * 4  + tailleValeurs);
             switch (type) {
                 case "INTEGER":
                     tempInt = Integer.parseInt(values.get(i));
-                    buff.putInt(tempInt);
-                    sizeValeur += 4;
+                    System.out.println("Size valuer  " +sizeValeur);
+                    buff.putInt(debutValeurs+sizeValeur,tempInt);
+                    sizeValeur+=4;
                     break;
 
                 case "REAL":
                     tempFloat = Float.parseFloat(values.get(i));
-                    buff.putFloat(tempFloat);
-                    sizeValeur += 4;
+                    buff.putFloat(debutValeurs+sizeValeur,tempFloat);
+                    sizeValeur+=4;
                     break;
                 default:
                     for (int j = 0;   j < values.get(i).length() ; j++) {
-                        buff.putChar(values.get(i).charAt(j));
+                        buff.putChar(debutValeurs+sizeValeur,values.get(i).charAt(j));
                     }
-                    sizeValeur += 2 * values.get(i).length();
+                    sizeValeur+=2 * values.get(i).length();;
                     break;
             }
 
         }
-        buff.position(k);
-        buff.putInt((1+relInfo.getNbColonnes()) * 4  + sizeValeur);
+        // buff.position(k);
+        // buff.putInt((1+relInfo.getNbColonnes()) * 4  + sizeValeur);
         sizeValeur += (relInfo.getNbColonnes()+1)*4;
     }
 
     public void readFromBuffer(ByteBuffer buff, int pos) {
         String type;
-        int tempInt, tailleChaine, i, j,k;
+        int tempInt=0, tailleChaine, i, j,k;
         float tempFloat;
         char[] tempVarchar;
         String chaine;
+        int debutValeurs= (1+relInfo.getNbColonnes()) * 4;
+        int posLecture = pos+debutValeurs;
         values.clear();
         // switch
         for (k = 0; k < relInfo.getNbColonnes(); k++) {
             type = relInfo.getInfoColonne().get(k).getType();
-            buff.position(pos+recordSizeFromValues());
             switch (type) {
                 case "INTEGER":
-                    tempInt = buff.getInt();
+                    tempInt = buff.get(posLecture);
                     values.add(String.valueOf(tempInt));
                     break;
 
                 case "REAL":
-                    tempFloat = buff.getFloat();
+                    tempFloat = buff.getFloat(pos+debutValeurs);
                     values.add(String.valueOf(tempFloat));
                     break;
 
@@ -104,7 +104,6 @@ public class Record {
                     }
                     chaine = new String(tempVarchar);
                     values.add(chaine);
-                    System.out.println(values.get(k).length());
 
                     break;
             }
@@ -140,4 +139,15 @@ public class Record {
         }
         return writtenSize;
     }
+
+    public String toString(){
+        StringBuilder sb = new StringBuilder();
+        for(int i=0; i<values.size();i++){
+            sb.append(values.get(i)+" ");
+        }
+        return sb.toString();
+        
+    }
+    
+
 }

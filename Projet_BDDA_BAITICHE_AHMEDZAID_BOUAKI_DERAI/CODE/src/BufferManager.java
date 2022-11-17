@@ -1,16 +1,26 @@
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class BufferManager {
     public static BufferManager leBufferManager = new BufferManager();
     private Frame[] buffPool;
-    ArrayList<Frame> lru = new ArrayList<Frame>();
+    public Frame[] getBuffPool() {
+        return buffPool;
+    }
+
+
+    public void setBuffPool(Frame[] buffPool) {
+        this.buffPool = buffPool;
+    }
+
+    ArrayList<Frame> lru;
     Frame pRemplacee = new Frame();
     private static int tsGlobal=0;
 
     private BufferManager() {
-        
+        lru=new ArrayList<>();
         this.buffPool = new Frame[DBParams.frameCount];       
 
     }
@@ -39,8 +49,7 @@ public class BufferManager {
     public ByteBuffer getPage(PageId pageId) throws IOException {
         // verifier si pageId se trouve deja dans le buffPool
         for (int i = 0; i < buffPool.length; i++) {
-            if (buffPool[i].getPageId().equals(pageId)) {
-                System.out.println("La page existe");
+            if (buffPool[i].getPageId().fileIdx==pageId.fileIdx && buffPool[i].getPageId().pageIdx==pageId.pageIdx) {
                 buffPool[i].incrementerPinCount();
                 return buffPool[i].getBuff();
             }
@@ -57,6 +66,7 @@ public class BufferManager {
         }
         for (int i = 0; i < buffPool.length; i++) {
             if (buffPool[i].getPinCount() == 0) {
+                System.out.println("je remplis la liste lru");
                 lru.add(buffPool[i]);
             }
         }
@@ -103,7 +113,7 @@ public class BufferManager {
      */
     public void freePage(PageId pageId, boolean valdirty) {
         for(int i=0 ; i<buffPool.length ; i++){
-            if(buffPool[i].getPageId().pageIdx == pageId.pageIdx){
+            if(buffPool[i].getPageId().fileIdx==pageId.fileIdx && buffPool[i].getPageId().pageIdx==pageId.pageIdx){
                 tsGlobal++;
                 buffPool[i].setTs(tsGlobal);
                 buffPool[i].decrementerPinCount();
@@ -123,7 +133,7 @@ public class BufferManager {
      */
     public void flushAll() throws  IOException {
         for (Frame frame : this.buffPool) {
-            if (frame.getFlagDirty()) {
+            if (frame.getFlagDirty() && frame.getPageId().fileIdx!=-1) {
                 DiskManager.leDiskManager.writePage(frame.getPageId(), frame.getBuff());
             }
             frame.setPageId(new PageId(-1, 0));
@@ -139,7 +149,8 @@ public class BufferManager {
             if(buffPool[i].getPageId().fileIdx == -1){
                 System.out.println("Case vide\n");
             }else{
-                System.out.println(buffPool[i]+"\n");
+                System.out.println(buffPool[i]+"\n"+ Arrays.toString(buffPool[i].getBuff().array()));
+                
             }
         }
     }

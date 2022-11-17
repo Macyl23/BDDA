@@ -30,5 +30,13 @@ public class InsertCommand {
     public void execute() throws IOException{
         Record r = new Record(Catalog.leCatalog.getRelationInfo(nomRelation),valeursRecords);
         r.rid = FileManager.leFileManager.insertRecordIntoRelation(r);
+        viderValeursRecords();
+
+    }
+
+    private void viderValeursRecords(){
+        for(int i=0 ; i<valeursRecords.size() ; i++){
+            valeursRecords.remove(i);
+        }
     }
 }

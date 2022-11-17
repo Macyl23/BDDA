@@ -36,4 +36,8 @@ public class ColInfo implements Serializable {
         return typeReal;
     }
 
+    public String toString(){
+        return "type de colonne: "+this.type;
+    }
+
 }

@@ -32,6 +32,8 @@ public class DBManager {
                 i.execute();
             break;
             case "SELECT":
+                SelectCommand s = new SelectCommand(commande);
+                s.execute();
             break;
         }
     }

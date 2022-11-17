@@ -51,7 +51,7 @@ public class Frame {
 
     //verifier si une case est libre
     public boolean estVide(){
-        if(pageId.pageIdx==-1){
+        if(pageId.fileIdx==-1){
             return true;
         }
         return false;

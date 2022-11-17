@@ -71,6 +71,5 @@ public class TestBufferManager {
         System.out.println("Test de remplacement de page");
         testGetPageWhenAllFramesAreFull();
         
-
     }
 }

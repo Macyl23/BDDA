@@ -32,12 +32,14 @@ public class DiskManager {
 		boolean pageAvailaible = false;
 
 		if(pageDisponible.size() != 0){
+			System.out.println("J'ai des pages vides");
 			pid = pageDisponible.get(0);
 			pageDisponible.remove(0);
 			return pid;
 		}
 		while (f.exists() && !pageAvailaible) {
-			for (int j = 0; j < DBParams.maxPagesPerFile * 4; page++, j += DBParams.pageSize) {
+			for (int j = 0; j < DBParams.pageSize * DBParams.maxPagesPerFile; page++, j += DBParams.pageSize) {
+				
 				if (f.length() == j) {
 					pageAvailaible = true;
 					return new PageId(i,page);
@@ -47,11 +49,11 @@ public class DiskManager {
 
 			if (!pageAvailaible) {
 				i++;
-				f = new File(DBParams.DBPath + "/f" + i + ".bdda");
+				f = new File(DBParams.DBPath +""+ File.separator+"f" + i + ".bdda");
 			}
 		}
 		if (!f.exists()) {
-			RandomAccessFile file = new RandomAccessFile(DBParams.DBPath + "/f" + i + ".bdda", "rw");
+			RandomAccessFile file = new RandomAccessFile(DBParams.DBPath + ""+File.separator+"f" + i + ".bdda", "rw");
 			pid.fileIdx = i;
 			pid.pageIdx = 0;
 			file.close();
@@ -71,7 +73,7 @@ public class DiskManager {
 	 * sinon on lit octet par octet jusqu'a remplir le buffer
 	 */
 	public void readPage(PageId pid, ByteBuffer buff) throws IOException{
-		RandomAccessFile f = new RandomAccessFile(DBParams.DBPath+"/f"+pid.fileIdx+".bdda", "r");
+		RandomAccessFile f = new RandomAccessFile(DBParams.DBPath+""+File.separator+"f"+pid.fileIdx+".bdda", "r");
 		int start = pid.pageIdx*DBParams.pageSize;
 		f.seek(start);
 		if(buff.array().length == DBParams.pageSize){
@@ -95,7 +97,7 @@ public class DiskManager {
 	 * on lit le contenu du buffer et on le stocke dans le fichier
 	 */
 	public void writePage(PageId pid, ByteBuffer buff) throws IOException{
-		RandomAccessFile f = new RandomAccessFile(DBParams.DBPath+"/f"+pid.fileIdx+".bdda", "rw");
+		RandomAccessFile f = new RandomAccessFile(DBParams.DBPath+""+File.separator+"/f"+pid.fileIdx+".bdda", "rw");
 		int start = pid.pageIdx*DBParams.pageSize;
 		f.seek(start);
 		f.write(buff.array());

@@ -27,7 +27,8 @@ public class CreateTableCommand {
         String [] chaineSplit;
         String [] colonnes;
         chaineSplit= saisie.split(" ");
-        colonnes= chaineSplit[3].split(",");
+        String colonneTemp = chaineSplit[3].substring(1,chaineSplit[3].length()-1);
+        colonnes= colonneTemp.split(",");
         this.nomRelation= chaineSplit[2];
         this.nombreColonnes= colonnes.length;
 
@@ -54,7 +55,6 @@ public class CreateTableCommand {
         }
         RelationInfo relation = new RelationInfo(this.nomRelation, this.nombreColonnes,liste, HeaderPid);
         Catalog.leCatalog.addRelationInfo(relation);
-        Catalog.leCatalog.afficheRelationAjoute();
     }
 
     /**

@@ -24,7 +24,7 @@ public class Catalog implements Serializable {
         if (f.exists()) {
             FileInputStream fInput = new FileInputStream(f);
             ObjectInputStream in = new ObjectInputStream(fInput);
-            in.readObject();
+            Catalog.leCatalog = (Catalog)in.readObject();
             fInput.close();
             in.close();
         }
@@ -50,6 +50,7 @@ public class Catalog implements Serializable {
                 return tableauRelationInfo.get(i);
             }
         }
+        afficheRelationAjoute();
         return null;
     }
 
