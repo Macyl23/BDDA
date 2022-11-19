@@ -139,6 +139,7 @@ public class BufferManager {
             frame.setPageId(new PageId(-1, 0));
             frame.setPinCount(0);
             frame.setFlagDirty(false); 
+            frame.setBuff(ByteBuffer.allocate(DBParams.pageSize));
         }
 
     }
