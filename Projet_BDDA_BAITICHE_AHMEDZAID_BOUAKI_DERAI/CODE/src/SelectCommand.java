@@ -12,6 +12,7 @@ public class SelectCommand{
         recordResultat=new ArrayList<>();
         parse(saisie);
     }
+    
 
     private void parse(String cmd){
         commande = cmd.split(" ");
