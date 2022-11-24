@@ -29,7 +29,7 @@ public class InsertCommand {
 
     public void execute() throws IOException{
         Record r = new Record(Catalog.leCatalog.getRelationInfo(nomRelation),valeursRecords);
-        FileManager.leFileManager.insertRecordIntoRelation(r);
+        r.rid = FileManager.leFileManager.insertRecordIntoRelation(r);
         viderValeursRecords();
 
     }
