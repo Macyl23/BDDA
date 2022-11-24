@@ -26,7 +26,7 @@ public class SelectCondition {
 
     public String getOp() {
         return op;
-    }
+    } 
 
     public void setOp(String op) {
         this.op = op;
