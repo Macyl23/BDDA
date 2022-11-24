@@ -6,10 +6,10 @@ public class SelectCommand{
 
 
     public  String[] commande;
-    public  ArrayList<Record> records;
+    public  ArrayList<Record> recordResultat;
     public  String nomRelation;
     public SelectCommand(String saisie){
-        records=new ArrayList<>();
+        recordResultat=new ArrayList<>();
         parse(saisie);
     }
 
@@ -22,16 +22,27 @@ public class SelectCommand{
         if(commande.length > 5){
             /* Des critères ont été entrées  */
             ArrayList<SelectCondition> criteres = listeCriteres();
-            
+            ArrayList<Record> allRecords= FileManager.leFileManager.getAllRecords(Catalog.leCatalog.getRelationInfo(nomRelation));
+            for (Record record : allRecords) {
+                for(int i=0; i<criteres.size(); i++){
+                    int indiceColumn= listeCriteres().get(i).getIndiceColonne();
+                    String valCompare= listeCriteres().get(i).getValeurComparaison();
+                    String operateurCompare = listeCriteres().get(i).getOp();
+                    Boolean resultat= listeCriteres().get(i).verifConditionString(record.values.get(indiceColumn), valCompare, operateurCompare); 
+                    if(resultat){
+                        recordResultat.add(record);
+                    }
+                }
+            }
         }else{
-            records=FileManager.leFileManager.getAllRecords(Catalog.leCatalog.getRelationInfo(nomRelation));
-            afficherRecords();
+            recordResultat=FileManager.leFileManager.getAllRecords(Catalog.leCatalog.getRelationInfo(nomRelation));
         }
+        afficherRecords();
     }
 
     public void afficherRecords(){
-        for(int i=0 ; i<records.size();i++){
-            System.out.println(records.get(i).toString());
+        for(int i=0 ; i<recordResultat.size();i++){
+            System.out.println(recordResultat.get(i).toString());
         }
     }
 
@@ -51,7 +62,7 @@ public class SelectCommand{
         for(int i=0 ; i< SelectCondition.getOperateur().length;i++){
             if(str.contains(SelectCondition.getOperateur()[i])){
                 String[] condition = str.split(SelectCondition.getOperateur()[i]);
-                indice = getIndexColumn(nomRelation, condition[0]); 
+                indice = getIndexColumn( condition[0]); 
                 op = SelectCondition.getOperateur()[i];
                 val = condition[1];
             }
@@ -59,8 +70,14 @@ public class SelectCommand{
         return new SelectCondition(indice,op , val);
     }
 
-    private int getIndexColumn(String str,String nomColonne){
-        RelationInfo r = Catalog.leCatalog.getRelationInfo(str);
+    /**
+     * @param str
+     * @param nomColonne
+     * @return
+     * la methode permet de recuperer l'indice d'une colonne 
+     */
+    private int getIndexColumn(String nomColonne){
+        RelationInfo r = Catalog.leCatalog.getRelationInfo(nomRelation);
         for(int i=0 ; i<r.getNbColonnes() ; i++){
             if(r.getInfoColonne().get(i).getNom().equals(nomColonne)){
                 return i;

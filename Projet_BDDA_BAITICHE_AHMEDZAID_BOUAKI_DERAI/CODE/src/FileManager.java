@@ -164,7 +164,6 @@ public class FileManager {
 
     /* La liste qu'on devra renvoyer avec un record temporaire pour lire dans le buffer */
     ArrayList <Record> listeRecords = new ArrayList<>();
-    Record recordTemp = new Record(r);
 
     /* On doit recuperer le nombre de records qui est nbSlot
      * Trouver la position ou le premier record commence
@@ -180,6 +179,7 @@ public class FileManager {
      */
     posDebutRecord = bufferDataPage.getInt(posDebutSlot);
     for (int i =0; i < nbSlot; i++) {
+      Record recordTemp = new Record(r);
       recordTemp.readFromBuffer(bufferDataPage, posDebutRecord);
       System.out.println("recordTemp: "+recordTemp);
       listeRecords.add(recordTemp);
