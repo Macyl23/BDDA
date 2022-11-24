@@ -54,6 +54,10 @@ public class Catalog implements Serializable {
         return null;
     }
 
+
+    
+
+
     /**
      * reintialiser toutes les valeurs
      */
