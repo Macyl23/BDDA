@@ -5,13 +5,12 @@ public class Record {
     private RelationInfo relInfo;
     public ArrayList<String> values;
     public static int sizeValeur;
-    public RecordId rid;
 
     public Record(RelationInfo relation) {
         this.relInfo = relation;
         this.values = new ArrayList<>();
     }
-
+    
     public Record(RelationInfo relation, ArrayList<String> values){
         this.relInfo=relation;
         this.values=values;
@@ -40,7 +39,7 @@ public class Record {
         int tempInt;
         float tempFloat;
         int  k = 0;
-        int debutValeurs= (1+relInfo.getNbColonnes() * 4);
+        int debutValeurs= (1+relInfo.getNbColonnes()) * 4;
         int tailleValeurs=0;
         for (int i = 0; i < values.size() && k <= relInfo.getNbColonnes() * 4; i++, k += 4) {
             type = relInfo.getInfoColonne().get(i).getType();
@@ -48,27 +47,30 @@ public class Record {
             switch (type) {
                 case "INTEGER":
                     tempInt = Integer.parseInt(values.get(i));
-                    System.out.println("Size valuer  " +sizeValeur);
-                    buff.putInt(debutValeurs+sizeValeur,tempInt);
+                    buff.putInt(pos+debutValeurs+tailleValeurs,tempInt);
+                    tailleValeurs+=4;
                     sizeValeur+=4;
                     break;
 
                 case "REAL":
                     tempFloat = Float.parseFloat(values.get(i));
-                    buff.putFloat(debutValeurs+sizeValeur,tempFloat);
+                    buff.putFloat(pos+debutValeurs+tailleValeurs,tempFloat);
+                    tailleValeurs+=4;
                     sizeValeur+=4;
                     break;
                 default:
-                    for (int j = 0;   j < values.get(i).length() ; j++) {
-                        buff.putChar(debutValeurs+sizeValeur,values.get(i).charAt(j));
+                    for (int j = 0, h=debutValeurs+tailleValeurs;   j < values.get(i).length() ;h+=2, j++) {
+                        buff.putChar(pos+h,values.get(i).charAt(j));
                     }
-                    sizeValeur+=2 * values.get(i).length();;
+                    tailleValeurs += 2 * values.get(i).length();
+                    sizeValeur+=2 * values.get(i).length();
                     break;
             }
+            
 
         }
-        // buff.position(k);
-        // buff.putInt((1+relInfo.getNbColonnes()) * 4  + sizeValeur);
+        
+        buff.putInt(pos+k,(1+relInfo.getNbColonnes()) * 4  + sizeValeur);
         sizeValeur += (relInfo.getNbColonnes()+1)*4;
     }
 
@@ -79,31 +81,36 @@ public class Record {
         char[] tempVarchar;
         String chaine;
         int debutValeurs= (1+relInfo.getNbColonnes()) * 4;
-        int posLecture = pos+debutValeurs;
+        int posLecture = 0;
         values.clear();
         // switch
         for (k = 0; k < relInfo.getNbColonnes(); k++) {
             type = relInfo.getInfoColonne().get(k).getType();
+            posLecture = pos+debutValeurs;
             switch (type) {
                 case "INTEGER":
-                    tempInt = buff.get(posLecture);
+                    tempInt = buff.getInt(posLecture);
                     values.add(String.valueOf(tempInt));
+                    debutValeurs+=4;
                     break;
 
                 case "REAL":
+                    
                     tempFloat = buff.getFloat(pos+debutValeurs);
                     values.add(String.valueOf(tempFloat));
+                    debutValeurs+=4;
                     break;
 
                 default:
-                    tailleChaine = buff.getInt((k+1)*4) - buff.getInt(k*4);
+                    tailleChaine = buff.getInt(pos+(k+1)*4) - buff.getInt(pos+k*4);
                     tempVarchar = new char[tailleChaine/2];
-                    for (i = pos+recordSizeFromValues(), j = 0; i < pos+recordSizeFromValues()+ tailleChaine ; i+=2, j++) {
+                    for (i = pos+debutValeurs, j = 0; i < pos+debutValeurs+ tailleChaine ; i+=2, j++) {
                         // System.out.println(tempVarchar);
                         tempVarchar[j] = buff.getChar(i);
                     }
                     chaine = new String(tempVarchar);
                     values.add(chaine);
+                    debutValeurs+=tailleChaine;
 
                     break;
             }

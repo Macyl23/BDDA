@@ -1,7 +1,6 @@
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class FileManager {
 
@@ -28,7 +27,6 @@ public class FileManager {
 
   public PageId addDataPage(RelationInfo r) throws IOException {
     PageId pid = DiskManager.leDiskManager.allocPage();
-    BufferManager.leBufferManager.buffPoolContenu();
     ByteBuffer bufferDataPage = BufferManager.leBufferManager.getPage(pid); // Data Page
 
     /* DATA PAGE */
@@ -100,8 +98,8 @@ public class FileManager {
      * Recherche de la position de l'espace dispo et ecriture du record
      */
     int positionDispo = bufferDataPage.getInt(DBParams.pageSize - 4);
-    System.out.println(positionDispo);
     r.writeToBuffer(bufferDataPage, positionDispo);
+
 
     /*Recherche du la position ou les slots commencent
      * Ecriture de la position du debut du record
@@ -111,7 +109,6 @@ public class FileManager {
     int positionInsertionSlot = (DBParams.pageSize - 8) - ((nbSlot+1) * 8);
     bufferDataPage.putInt(positionInsertionSlot, positionDispo);
     bufferDataPage.putInt(positionInsertionSlot + 4, r.getWrittenSize());
-
     /*
      * Recuperer la valeur du nombre du slot
      * Incrementer le nombre de slot
@@ -163,8 +160,8 @@ public class FileManager {
     int posDebutRecord = 0;
 
     /* La liste qu'on devra renvoyer avec un record temporaire pour lire dans le buffer */
-    ArrayList <Record> listeRecords = new ArrayList<>();
-    Record recordTemp = new Record(r);
+    ArrayList <Record> listeRecords = new ArrayList<Record>();
+    
 
     /* On doit recuperer le nombre de records qui est nbSlot
      * Trouver la position ou le premier record commence
@@ -180,15 +177,12 @@ public class FileManager {
      */
     posDebutRecord = bufferDataPage.getInt(posDebutSlot);
     for (int i =0; i < nbSlot; i++) {
+      Record recordTemp=new Record(r);
       recordTemp.readFromBuffer(bufferDataPage, posDebutRecord);
-      System.out.println("recordTemp: "+recordTemp);
       listeRecords.add(recordTemp);
       posDebutRecord = bufferDataPage.getInt(posDebutSlot+8);
+
     }
-    for( int i=0 ; i<nbSlot ; i++){
-      System.out.println("contenu liste record: "+listeRecords.get(i));
-    }
-    
     BufferManager.leBufferManager.freePage(pid, true);
     return listeRecords;
   }
@@ -198,8 +192,6 @@ public class FileManager {
     ByteBuffer bufferHeaderPage = BufferManager.leBufferManager.getPage(
       r.getHeaderPageId()
     );
-    System.out.println("buffer header page"+Arrays.toString(bufferHeaderPage.array())); 
-    BufferManager.leBufferManager.buffPoolContenu();
     /*
      * On recupere le nombre de data page en lisant les 4 premiers octets du header page
      * On initialiste la position de debut du pageId de la data page une qui s'agit de 4
