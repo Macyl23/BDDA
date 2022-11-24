@@ -99,6 +99,7 @@ public class FileManager {
      */
     int positionDispo = bufferDataPage.getInt(DBParams.pageSize - 4);
     r.writeToBuffer(bufferDataPage, positionDispo);
+   
 
 
     /*Recherche du la position ou les slots commencent
@@ -109,17 +110,22 @@ public class FileManager {
     int positionInsertionSlot = (DBParams.pageSize - 8) - ((nbSlot+1) * 8);
     bufferDataPage.putInt(positionInsertionSlot, positionDispo);
     bufferDataPage.putInt(positionInsertionSlot + 4, r.getWrittenSize());
+
     /*
      * Recuperer la valeur du nombre du slot
      * Incrementer le nombre de slot
      */
     bufferDataPage.putInt(DBParams.pageSize - 8, nbSlot + 1);
 
+
+
     /*
      * Mise a jour de la position de l'espace disponible
      */
     positionDispo = positionDispo + r.getWrittenSize();
     bufferDataPage.putInt(DBParams.pageSize - 4, positionDispo);
+
+
 
     BufferManager.leBufferManager.freePage(pid, true);
 
@@ -175,12 +181,15 @@ public class FileManager {
      * On ajoute le record dans la liste
      * Et on passe a la posiiton de debut du prochain record
      */
-    posDebutRecord = bufferDataPage.getInt(posDebutSlot);
+    
+    int idxPosDebutRecord=posDebutSlot;
     for (int i =0; i < nbSlot; i++) {
       Record recordTemp=new Record(r);
+      posDebutRecord = bufferDataPage.getInt(idxPosDebutRecord);
       recordTemp.readFromBuffer(bufferDataPage, posDebutRecord);
       listeRecords.add(recordTemp);
-      posDebutRecord = bufferDataPage.getInt(posDebutSlot+8);
+      idxPosDebutRecord+=8;
+
 
     }
     BufferManager.leBufferManager.freePage(pid, true);

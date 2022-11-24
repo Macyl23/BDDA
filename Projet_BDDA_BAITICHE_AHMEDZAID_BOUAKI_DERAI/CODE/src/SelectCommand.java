@@ -14,30 +14,25 @@ public class SelectCommand{
     }
     
 
+
+    /**
+     * Méthode qui permet de découper la commande en un tableau pour 
+     * récuperer le nom de la relation
+     * @param cmd la commande entré par l'utilisateur
+     */
     private void parse(String cmd){
         commande = cmd.split(" ");
         this.nomRelation=commande[3];
         
     }
+
+    /**
+     * Lancer la méthode qui choisit les records a afficher 
+     * Affiche les records
+     * @throws IOException
+     */
     public  void execute() throws IOException{
-        if(commande.length > 5){
-            /* Des critères ont été entrées  */
-            ArrayList<SelectCondition> criteres = listeCriteres();
-            ArrayList<Record> allRecords= FileManager.leFileManager.getAllRecords(Catalog.leCatalog.getRelationInfo(nomRelation));
-            for (Record record : allRecords) {
-                for(int i=0; i<criteres.size(); i++){
-                    int indiceColumn= listeCriteres().get(i).getIndiceColonne();
-                    String valCompare= listeCriteres().get(i).getValeurComparaison();
-                    String operateurCompare = listeCriteres().get(i).getOp();
-                    Boolean resultat= listeCriteres().get(i).verifConditionString(record.values.get(indiceColumn), valCompare, operateurCompare); 
-                    if(resultat){
-                        recordResultat.add(record);
-                    }
-                }
-            }
-        }else{
-            recordResultat=FileManager.leFileManager.getAllRecords(Catalog.leCatalog.getRelationInfo(nomRelation));
-        }
+        selectedRecords();
         afficherRecords();
     }
 
@@ -47,7 +42,39 @@ public class SelectCommand{
         }
     }
 
+
+    /**
+     * Méthode qui vérifie si la commande contient des critères ou pas 
+     * Si des critères on été entrés on affiche les records qui respecte les conditions
+     * Sinon on récupere tous les records
+     * @throws IOException
+     */
+    private void selectedRecords() throws IOException{
+        boolean resultat=true;
+        if(commande.length > 5){
+            /* Des critères ont été entrées  */
+            ArrayList<SelectCondition> criteres = listeCriteres();
+            ArrayList<Record> allRecords= FileManager.leFileManager.getAllRecords(Catalog.leCatalog.getRelationInfo(nomRelation));
+            for (Record record : allRecords) {
+                for(int i=0; i<criteres.size(); i++){
+                    int indiceColumn= listeCriteres().get(i).getIndiceColonne();
+                    resultat= listeCriteres().get(i).verifConditionString(record.values.get(indiceColumn)); 
+                }
+                if(resultat){
+                    recordResultat.add(record);
+                }
+            }
+        }else{
+            recordResultat=FileManager.leFileManager.getAllRecords(Catalog.leCatalog.getRelationInfo(nomRelation));
+        }
+    }
+     
     
+
+    /**
+     * Découpe les critères dans différentes cases d'une liste
+     * @return l'arraylist contenant dans chaque case les critères a respecter
+     */
     private ArrayList<SelectCondition> listeCriteres(){
         String[] criteres = commande[5].split("AND");
             ArrayList<SelectCondition>  sc = new ArrayList<>();
@@ -56,6 +83,13 @@ public class SelectCommand{
             }
             return sc;
     }
+
+    
+    /**
+     * Crée une instance de selectCondition contenant les critères
+     * @param str la condition a découper 
+     * @return l'instance de selectCondition
+     */
     private SelectCondition parseCmd(String str){
         int indice=0; 
         String op="";
@@ -68,7 +102,7 @@ public class SelectCommand{
                 val = condition[1];
             }
         }
-        return new SelectCondition(indice,op , val);
+        return new SelectCondition(indice,op,val);
     }
 
     /**
@@ -86,37 +120,4 @@ public class SelectCommand{
         }
         return -1;
     }
-
-    private boolean testCondition(SelectCondition sc,String valeurRecord){
-        RelationInfo r = Catalog.leCatalog.getRelationInfo(nomRelation);
-        String type = r.getInfoColonne().get(sc.getIndiceColonne()).getType();
-
-        switch(type){
-            case "INTEGER":
-                return sc.verifConditionNombre(Float.parseFloat(valeurRecord), Float.parseFloat(sc.getValeurComparaison()),sc.getOp());
-            case "REAL":
-                return sc.verifConditionNombre(Float.parseFloat(valeurRecord), Float.parseFloat(sc.getValeurComparaison()),sc.getOp());
-            default:
-                return sc.verifConditionString(valeurRecord, valeurRecord, type);
-        }
-
-    }
-    
-    // private ArrayList<Record> getFilteredRecordsInDataPage(RelationInfo r,ArrayList<SelectCondition> sc) throws IOException{
-    //     ArrayList<PageId> allDataPage = FileManager.leFileManager.getAllDataPage(r);
-    //     ArrayList<Record> records = new ArrayList<>();
-    //     for(int i=0 ; i<allDataPage.size() ; i++){
-    //         ByteBuffer bufferDataPage = BufferManager.leBufferManager.getPage(allDataPage.get(i));
-    //         int nbSlots = bufferDataPage.getInt(DBParams.pageSize-8);
-    //         for(int j=0 ; j<nbSlots ; j++){
-    //             for(int k=0 ; k<sc.size() ; k++){
-    //                 int posDebutValeur = bufferDataPage.getInt(4*sc.get(k).getIndiceColonne());
-    //                 int valeur = 
-    //                 if(testCondition(sc.get(k), nomRelation)){
-    //                     records.add(null)
-    //                 }
-    //             }
-    //         }
-    //     }
-    // }
 }

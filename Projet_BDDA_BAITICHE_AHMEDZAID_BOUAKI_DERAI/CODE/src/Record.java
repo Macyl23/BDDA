@@ -5,6 +5,7 @@ public class Record {
     private RelationInfo relInfo;
     public ArrayList<String> values;
     public static int sizeValeur;
+    public static int nbRecords=0;
 
     public Record(RelationInfo relation) {
         this.relInfo = relation;
@@ -26,13 +27,12 @@ public class Record {
 
     /**
      * Méthode qui permet d'écrire un record dans le buffer
-     * 
      * @param buff
      * @param pos
-     *             On position le curseur du buffer
-     *             On parcourt la liste de values
-     *             On convertit la valeur de chaque type et on écrit
-     *             Sinon si une on trouve un String on écrit char par char
+     *On position le curseur du buffer
+     *On parcourt la liste de values
+     *On convertit la valeur de chaque type et on écrit
+     *Sinon si une on trouve un String on écrit char par char
      */
     public void writeToBuffer(ByteBuffer buff, int pos) {
         String type;
@@ -69,7 +69,7 @@ public class Record {
             
 
         }
-        
+        nbRecords++;
         buff.putInt(pos+k,(1+relInfo.getNbColonnes()) * 4  + sizeValeur);
         sizeValeur += (relInfo.getNbColonnes()+1)*4;
     }
@@ -122,7 +122,7 @@ public class Record {
 
 
     public int getWrittenSize(){
-        return sizeValeur;
+        return sizeValeur/nbRecords;
     }
 
     public int recordSizeFromValues(){
