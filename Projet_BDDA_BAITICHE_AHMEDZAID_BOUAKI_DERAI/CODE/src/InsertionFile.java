@@ -25,10 +25,15 @@ class InsertionFile {
             e.printStackTrace();
         }
         //initialisation ma variable saisie pour instancier la class InsertCommand
-        String chaine = "INSERT INTO " + this.nomRelation + "FILECONTENTS";
-        String saisie = chaine + valeurRecords;
+        String chaine = "INSERT INTO " + this.nomRelation + "VALUES(";
+        String saisie = chaine + valeurRecords+")";
         //instanciation de la commande insert
-        //InsertCommand is = new InsertCommand(String saisie)
+        try {
+            InsertCommand is = new InsertCommand(saisie);
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
     // affihce pour le main pour tester ma classe Insertion par lot
     public void afficheTab(){
