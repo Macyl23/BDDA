@@ -1,52 +1,70 @@
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
-class InsertionFile {
+
+public class InsertionFile {
+
     private String nomRelation;
-    //tableau de String qui sert a enregistrer les lignes de Fichier
     private ArrayList<String>valeurRecords;
-    public InsertionFile(String fichier){
-        //variable ligne on obtient a l'apelle de la methode lireFichier()
-      System.out.println("nous somme dans le constructeur" );
-      //initialisation de l'objet qui sert à lire le fichier
+    private String nomFichier;
+    
+
+
+    public InsertionFile(String cmd){
+        recupererInfos(cmd);
+        this.valeurRecords = new ArrayList<>();
+    }
+
+    public void insererFichier(){
+        remplirValeurRecords();
+        remplirCommande();
+    }
+
+    private void remplirValeurRecords(){
         LireCsv lc;
-        // LECURE DU FICHIER POUR RECUPERER ligne par ligne les values
         try {
-            lc = new LireCsv(fichier);
+            lc = new LireCsv(nomFichier);
             valeurRecords = new ArrayList<>();
             try {
                 valeurRecords =  lc.lireFichier();
             } catch (IOException e) {
-            // TODO Auto-generated catch block
                 e.printStackTrace();
             }
         } catch (FileNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        //initialisation ma variable saisie pour instancier la class InsertCommand
-        String chaine = "INSERT INTO " + this.nomRelation + "VALUES(";
-        String saisie = chaine + valeurRecords+")";
-        //instanciation de la commande insert
-        try {
-            InsertCommand is = new InsertCommand(saisie);
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }
-    // affihce pour le main pour tester ma classe Insertion par lot
+
+    private void remplirCommande(){
+        for(String value : valeurRecords){
+            String chaine = "INSERT INTO " + this.nomRelation + " VALUES(";
+            String saisie = chaine + value+")";
+            try {
+                InsertCommand is = new InsertCommand(saisie);
+                is.execute();
+                
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void recupererInfos(String cmd){
+        String[] cmdSplit = cmd.split(" ");
+        this.nomRelation = cmdSplit[2];
+        String[] fileSplit = cmdSplit[3].split("\\(");
+        String nameFile = fileSplit[1].substring(0,fileSplit[1].length()-1);
+        this.nomFichier = nameFile;
+    }
     public void afficheTab(){
-        System.out.println("cc methode recup");
         for(int i = 0; i < valeurRecords.size(); i ++){
             System.out.println(valeurRecords.get(i));
         }
     }
 
-public static void main(String[] args) {
-    
-        System.out.println("nomFichier : " + args[0]);
-        InsertionFile ip = new InsertionFile(args[0]);
-        ip.afficheTab();
+    public String toString(){
+        return this.nomRelation+" "+this.nomFichier;
     }
+
+
 }
