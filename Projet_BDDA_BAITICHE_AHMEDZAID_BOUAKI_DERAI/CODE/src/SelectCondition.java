@@ -19,6 +19,7 @@ public class SelectCondition {
      * @return TRUE si la condition est satisfaite false sinon
      */
     public  boolean verifConditionString(String valeurRecord){
+        
         switch (this.op){
             case "=":
 			return this.valeurComparaison.equals(valeurRecord);

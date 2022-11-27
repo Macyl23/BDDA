@@ -9,6 +9,7 @@ public class DiskManager {
 	public ArrayList<PageId> pageDisponible = new ArrayList<PageId>();
 	public static DiskManager leDiskManager = new DiskManager();
 	public int count;
+	public ArrayList<PageId> pageAlloues = new ArrayList<PageId>();
 
 	/* Allocation d'une page
 	 * @return L'index du fichier et la page
@@ -24,24 +25,38 @@ public class DiskManager {
 	 * @throws IOException
 	 */
 	public PageId allocPage() throws IOException {
-		PageId pid = new PageId();
+		PageId pidTemp = new PageId();
 		count++;
 		int i = 0;
 		int page = 0;
 		File f = new File(DBParams.DBPath + ""+File.separator+"f" +i + ".bdda");
 		boolean pageAvailaible = false;
 
-		if(pageDisponible.size() != 0){
+		if(!pageDisponible.isEmpty()){
 			System.out.println("J'ai des pages vides");
-			pid = pageDisponible.get(0);
+			PageId pid = pageDisponible.get(0);
 			pageDisponible.remove(0);
 			return pid;
 		}
+
+		if(!pageAlloues.isEmpty()){
+			if(pageAlloues.get(pageAlloues.size()-1).pageIdx < DBParams.maxPagesPerFile){
+				int p = pageAlloues.get(pageAlloues.size()-1).pageIdx+1;
+				pageAlloues.add(new PageId(pageAlloues.get(pageAlloues.size()-1).fileIdx,p));
+				return new PageId(pageAlloues.get(pageAlloues.size()-1).fileIdx,p);
+			}else{
+				int fPageId = pageAlloues.get(pageAlloues.size()-1).fileIdx+1;
+				pageAlloues.add(new PageId(fPageId,0));
+				return new PageId(fPageId,0);
+			}
+		}
+		
 		while (f.exists() && !pageAvailaible) {
 			for (int j = 0; j < DBParams.pageSize * DBParams.maxPagesPerFile; page++, j += DBParams.pageSize) {
 				
 				if (f.length() == j) {
 					pageAvailaible = true;
+					pageAlloues.add(new PageId(i,page));
 					return new PageId(i,page);
 
 				}
@@ -54,12 +69,12 @@ public class DiskManager {
 		}
 		if (!f.exists()) {
 			RandomAccessFile file = new RandomAccessFile(DBParams.DBPath + ""+File.separator+"f" + i + ".bdda", "rw");
-			pid.fileIdx = i;
-			pid.pageIdx = 0;
+			pidTemp.fileIdx = i;
+			pidTemp.pageIdx = 0;
 			file.close();
 		}
-		
-		return pid;
+		pageAlloues.add(pidTemp);
+		return pidTemp;
 	}
 
 	

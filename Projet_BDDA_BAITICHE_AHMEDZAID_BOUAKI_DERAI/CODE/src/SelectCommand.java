@@ -21,9 +21,9 @@ public class SelectCommand{
      * @param cmd la commande entré par l'utilisateur
      */
     private void parse(String cmd){
-        commande = cmd.split(" ");
-        this.nomRelation=commande[3];
-        
+        commande = cmd.split("WHERE");
+        String[] cmdTemp = commande[0].split(" ");
+        this.nomRelation=cmdTemp[3];
     }
 
     /**
@@ -50,20 +50,25 @@ public class SelectCommand{
      * @throws IOException
      */
     private void selectedRecords() throws IOException{
-        boolean resultat=true;
-        if(commande.length > 5){
+        if(commande.length == 2){
             /* Des critères ont été entrées  */
             ArrayList<SelectCondition> criteres = listeCriteres();
             ArrayList<Record> allRecords= FileManager.leFileManager.getAllRecords(Catalog.leCatalog.getRelationInfo(nomRelation));
+            System.out.println("sizerecord"+allRecords.size());
             for (Record record : allRecords) {
-                for(int i=0; i<criteres.size(); i++){
+                int i=0;
+                boolean resultat=true;
+                while(i<criteres.size() && resultat){
                     int indiceColumn= listeCriteres().get(i).getIndiceColonne();
                     resultat= listeCriteres().get(i).verifConditionString(record.values.get(indiceColumn)); 
+                    i++;
                 }
                 if(resultat){
                     recordResultat.add(record);
                 }
             }
+            
+            
         }else{
             recordResultat=FileManager.leFileManager.getAllRecords(Catalog.leCatalog.getRelationInfo(nomRelation));
         }
@@ -76,12 +81,13 @@ public class SelectCommand{
      * @return l'arraylist contenant dans chaque case les critères a respecter
      */
     private ArrayList<SelectCondition> listeCriteres(){
-        String[] criteres = commande[5].split("AND");
-            ArrayList<SelectCondition>  sc = new ArrayList<>();
-            for(int i=0 ; i< criteres.length ; i++){
-                sc.add(parseCmd(criteres[i]));
-            }
-            return sc;
+        String[] criteres = commande[1].split("AND");
+        
+        ArrayList<SelectCondition>  sc = new ArrayList<>();
+        for(int i=0 ; i< criteres.length ; i++){
+            sc.add(parseCmd(criteres[i]));
+        }
+        return sc;
     }
 
     
@@ -97,9 +103,13 @@ public class SelectCommand{
         for(int i=0 ; i< SelectCondition.getOperateur().length;i++){
             if(str.contains(SelectCondition.getOperateur()[i])){
                 String[] condition = str.split(SelectCondition.getOperateur()[i]);
-                indice = getIndexColumn( condition[0]); 
+                indice = getIndexColumn(condition[0].substring(1)); 
                 op = SelectCondition.getOperateur()[i];
-                val = condition[1];
+                if(condition[1].contains(" ")){
+                    val = condition[1].substring(0,condition[1].length()-1);
+                }else
+                    val = condition[1];
+                System.out.println("val= "+val);
             }
         }
         return new SelectCondition(indice,op,val);
@@ -113,6 +123,7 @@ public class SelectCommand{
      */
     private int getIndexColumn(String nomColonne){
         RelationInfo r = Catalog.leCatalog.getRelationInfo(nomRelation);
+
         for(int i=0 ; i<r.getNbColonnes() ; i++){
             if(r.getInfoColonne().get(i).getNom().equals(nomColonne)){
                 return i;
@@ -120,4 +131,6 @@ public class SelectCommand{
         }
         return -1;
     }
+
+    
 }

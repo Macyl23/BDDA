@@ -19,13 +19,13 @@ public class FileManager {
     BufferManager.leBufferManager.initBuffPool();
     ByteBuffer bufferHeaderPage = BufferManager.leBufferManager.getPage(pageIdFile);
     bufferHeaderPage.putInt(0, 0);
-    
-    DiskManager.leDiskManager.writePage(pageIdFile, bufferHeaderPage);
     BufferManager.leBufferManager.freePage(pageIdFile, true);
+
     return pageIdFile;
   }
 
   public PageId addDataPage(RelationInfo r) throws IOException {
+    
     PageId pid = DiskManager.leDiskManager.allocPage();
     ByteBuffer bufferDataPage = BufferManager.leBufferManager.getPage(pid); // Data Page
 
@@ -46,15 +46,16 @@ public class FileManager {
     // Ajouter l'id data page et l'espace disponible
     bufferHeaderPage.putInt(espaceDispo, pid.fileIdx);
     bufferHeaderPage.putInt(espaceDispo + 4, pid.pageIdx);
-    bufferHeaderPage.putInt(DBParams.pageSize - 8);
+    bufferHeaderPage.putInt(espaceDispo+8,DBParams.pageSize - 8);
 
     // Incrémenter data page
     dataPage++;
     bufferHeaderPage.putInt(0, dataPage);
+    
 
 
 
-    BufferManager.leBufferManager.freePage(pid, true);
+    BufferManager.leBufferManager.freePage(r.getHeaderPageId(), true);
 
     return pid;
   }
@@ -70,10 +71,11 @@ public class FileManager {
     // recupere byteBuffer de la relation
     PageId pageId = new PageId();
     int j = 0;
+    
     ByteBuffer bufferHeaderPage = BufferManager.leBufferManager.getPage(r.getHeaderPageId());
+    
     // verifier que le ByteBuffer contient page tel que sizeRecord correspondant à
     // la taille du record à insérer de la page
-   
       for (int i = 12; i < bufferHeaderPage.capacity(); i += 12) {
         if (bufferHeaderPage.getInt(i) >= sizeRecord) {
           j = i - 8;
@@ -85,6 +87,7 @@ public class FileManager {
         }
       }
       BufferManager.leBufferManager.freePage(r.getHeaderPageId(), false);
+      
       return FileManager.leFileManager.addDataPage(r);
     
    
@@ -131,37 +134,19 @@ public class FileManager {
 
     /*
      * Mise a jour de la header Page
-     * Incrementer le nombre de data page
+     * Changer le nb d'octets libres dans la dataPage
      */
     ByteBuffer bufferHeaderPage = BufferManager.leBufferManager.getPage(r.getRelInfo().getHeaderPageId());
-    int espaceLibre = bufferHeaderPage.getInt(0) * 12;
-    bufferHeaderPage.putInt(espaceLibre, pid.pageIdx);
-    bufferHeaderPage.putInt(espaceLibre + 4, pid.fileIdx);
-
-    /*
-     * Recherche espace dispo pour ajouter
-     * ID Data page et nb octets libre
-     * Ajout du ID DATAPAGE
-     * Ajout des octets libre
-     */
-    int espaceDispo = bufferHeaderPage.getInt(0) * 12 + 4;
-    bufferHeaderPage.putInt(espaceDispo, pid.pageIdx);
-    bufferHeaderPage.putInt(espaceDispo + 4, pid.fileIdx);
-
-    int nbOctetsLibre = DBParams.pageSize - 8 - nbSlot - positionDispo;
-    bufferHeaderPage.putInt(espaceDispo + 8, nbOctetsLibre);
-
+    int posNbOctetsLibreDP = bufferHeaderPage.getInt(0) * 12;
+    bufferHeaderPage.getInt(posNbOctetsLibreDP);
+    int newOctetsLibre = bufferHeaderPage.getInt(posNbOctetsLibreDP)-r.getWrittenSize()-8;
+    bufferHeaderPage.putInt(posNbOctetsLibreDP, newOctetsLibre);
     
-    BufferManager.leBufferManager.freePage(
-      r.getRelInfo().getHeaderPageId(),
-      true
-    );
-
+    BufferManager.leBufferManager.freePage(r.getRelInfo().getHeaderPageId(),true);
     return new RecordId(pid, nbSlot);
   }
 
-  public ArrayList<Record> getRecordsInDataPage(RelationInfo r, PageId pid)
-    throws IOException {
+  public ArrayList<Record> getRecordsInDataPage(RelationInfo r, PageId pid) throws IOException {
     ByteBuffer bufferDataPage = BufferManager.leBufferManager.getPage(pid);
     int posDebutRecord = 0;
 
@@ -198,9 +183,7 @@ public class FileManager {
 
   public ArrayList<PageId> getAllDataPage(RelationInfo r) throws IOException {
     /*HEADER PAGE */
-    ByteBuffer bufferHeaderPage = BufferManager.leBufferManager.getPage(
-      r.getHeaderPageId()
-    );
+    ByteBuffer bufferHeaderPage = BufferManager.leBufferManager.getPage(r.getHeaderPageId());
     /*
      * On recupere le nombre de data page en lisant les 4 premiers octets du header page
      * On initialiste la position de debut du pageId de la data page une qui s'agit de 4
@@ -217,7 +200,6 @@ public class FileManager {
      * Il y'a 12 octets occupés
      */
     for (int i = 0; i < nbDataPage; i++) {
-      
       pidTemp = new PageId(bufferHeaderPage.getInt(positionDataPage),bufferHeaderPage.getInt(positionDataPage+4));
       listeDataPage.add(pidTemp);
       positionDataPage += 12;
@@ -233,6 +215,7 @@ public class FileManager {
    * Acec en parametres la relation info et la taille du record
    */
   public RecordId insertRecordIntoRelation(Record r) throws IOException {
+
     return writeRecordToDataPage(r,getFreeDataPageId(r.getRelInfo(), r.recordSizeFromValues()));
   }
 

@@ -144,7 +144,7 @@ public class Record {
 
             }
         }
-        return writtenSize;
+        return writtenSize+(1+relInfo.getNbColonnes()) * 4;
     }
 
     public String toString(){

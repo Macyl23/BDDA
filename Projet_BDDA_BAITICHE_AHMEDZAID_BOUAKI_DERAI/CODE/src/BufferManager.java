@@ -66,7 +66,6 @@ public class BufferManager {
         }
         for (int i = 0; i < buffPool.length; i++) {
             if (buffPool[i].getPinCount() == 0) {
-                System.out.println("je remplis la liste lru");
                 lru.add(buffPool[i]);
             }
         }
