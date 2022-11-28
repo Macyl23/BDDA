@@ -46,6 +46,8 @@ public class DiskManager {
 				return new PageId(pageAlloues.get(pageAlloues.size()-1).fileIdx,p);
 			}else{
 				int fPageId = pageAlloues.get(pageAlloues.size()-1).fileIdx+1;
+				f=new File(DBParams.DBPath + ""+File.separator+"f" +fPageId + ".bdda");
+				f.createNewFile();
 				pageAlloues.add(new PageId(fPageId,0));
 				return new PageId(fPageId,0);
 			}

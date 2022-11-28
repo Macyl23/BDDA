@@ -54,7 +54,6 @@ public class SelectCommand{
             /* Des critères ont été entrées  */
             ArrayList<SelectCondition> criteres = listeCriteres();
             ArrayList<Record> allRecords= FileManager.leFileManager.getAllRecords(Catalog.leCatalog.getRelationInfo(nomRelation));
-            System.out.println("sizerecord"+allRecords.size());
             for (Record record : allRecords) {
                 int i=0;
                 boolean resultat=true;
@@ -109,7 +108,6 @@ public class SelectCommand{
                     val = condition[1].substring(0,condition[1].length()-1);
                 }else
                     val = condition[1];
-                System.out.println("val= "+val);
             }
         }
         return new SelectCondition(indice,op,val);

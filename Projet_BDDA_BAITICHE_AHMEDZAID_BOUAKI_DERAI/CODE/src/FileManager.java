@@ -16,6 +16,7 @@ public class FileManager {
   // createNewHeaderPage
   public PageId createNewHeaderPage() throws IOException {
     PageId pageIdFile = DiskManager.leDiskManager.allocPage();
+    System.out.println("header page id "+pageIdFile.toString());
     BufferManager.leBufferManager.initBuffPool();
     ByteBuffer bufferHeaderPage = BufferManager.leBufferManager.getPage(pageIdFile);
     bufferHeaderPage.putInt(0, 0);
@@ -27,6 +28,7 @@ public class FileManager {
   public PageId addDataPage(RelationInfo r) throws IOException {
     
     PageId pid = DiskManager.leDiskManager.allocPage();
+
     ByteBuffer bufferDataPage = BufferManager.leBufferManager.getPage(pid); // Data Page
 
     /* DATA PAGE */
@@ -51,7 +53,7 @@ public class FileManager {
     // Incrémenter data page
     dataPage++;
     bufferHeaderPage.putInt(0, dataPage);
-    
+
 
 
 
@@ -78,10 +80,11 @@ public class FileManager {
     // la taille du record à insérer de la page
       for (int i = 12; i < bufferHeaderPage.capacity(); i += 12) {
         if (bufferHeaderPage.getInt(i) >= sizeRecord) {
+          System.out.println("im here");
           j = i - 8;
-          pageId.pageIdx = bufferHeaderPage.getInt(j);
-          j = i + 4;
           pageId.fileIdx = bufferHeaderPage.getInt(j);
+          j = i - 4;
+          pageId.pageIdx = bufferHeaderPage.getInt(j);
           BufferManager.leBufferManager.freePage(r.getHeaderPageId(), false);
           return pageId;
         }
@@ -93,8 +96,9 @@ public class FileManager {
    
   }
 
-  public RecordId writeRecordToDataPage(Record r, PageId pid)
-    throws IOException {
+  public RecordId writeRecordToDataPage(Record r, PageId pid) throws IOException {
+      
+    System.out.println("pid = "+pid.toString());
     ByteBuffer bufferDataPage = BufferManager.leBufferManager.getPage(pid);
     
     /*
