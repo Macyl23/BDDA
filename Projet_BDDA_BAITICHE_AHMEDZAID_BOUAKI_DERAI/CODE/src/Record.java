@@ -149,9 +149,10 @@ public class Record {
 
     public String toString(){
         StringBuilder sb = new StringBuilder();
-        for(int i=0; i<values.size();i++){
-            sb.append(values.get(i)+" ");
+        for(int i=0; i<values.size()-1;i++){
+            sb.append(values.get(i)+" ; ");
         }
+        sb.append(values.get(values.size()-1)+".");
         return sb.toString();
         
     }

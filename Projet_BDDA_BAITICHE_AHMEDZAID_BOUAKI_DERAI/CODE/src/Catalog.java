@@ -10,15 +10,19 @@ import java.util.ArrayList;
 public class Catalog implements Serializable {
     // tableau de type RelationInfo
     private static final long serialVersionUID = 1234L;
-    private ArrayList<RelationInfo> tableauRelationInfo=new ArrayList<>();
-    private int compteRelation;
+    private ArrayList<RelationInfo> listeRelationInfo=new ArrayList<>();
 
-    private Catalog() {
-    }
+    private Catalog() {}
     public static Catalog leCatalog = new Catalog();
     
 
 
+    /**
+     * Méthode qui permet de faire de la désérialisation en récupérant les données 
+     * stockés dans le Catalog
+     * @throws ClassNotFoundException
+     * @throws IOException
+     */
     public void init() throws ClassNotFoundException, IOException {
         File f = new File(DBParams.DBPath + "/Catalog.sy");
         if (f.exists()) {
@@ -30,49 +34,10 @@ public class Catalog implements Serializable {
         }
     }
 
-    public void finish() throws IOException {
-        sauvegarder();
-    };
-
-
-    
-
-    public void addRelationInfo(RelationInfo ri) {
-        tableauRelationInfo.add(ri);
-        compteRelation++;
-    }
-
-    // reucperer l'indice ou la relaton passer en parametres est presente dans le
-    // tableau tableauRelation
-    public RelationInfo getRelationInfo(String relation) {
-        for (int i = 0; i < tableauRelationInfo.size(); i++) {
-            if (tableauRelationInfo.get(i).getNomRelation().equals(relation)) {
-                return tableauRelationInfo.get(i);
-            }
-        }
-        afficheRelationAjoute();
-        return null;
-    }
-
-
-    
-
-
-    /**
-     * reintialiser toutes les valeurs
+    /*
+     * Méthode qui s'éxecute a chaque fin de programme pour faire de la sérialisation
      */
-    public void reinitialiser(){
-        tableauRelationInfo.clear();
-    }
-
-    public void afficheRelationAjoute(){
-        for(int i=0 ; i<tableauRelationInfo.size();i++){
-            tableauRelationInfo.get(i).toString();
-        }
-    }
-
-    // sauvegarder un catalog
-    private void sauvegarder() throws IOException {
+    public void finish() throws IOException {
         File f = new File(DBParams.DBPath + "/Catalog.sy");
         try{
             FileOutputStream fOutput = new FileOutputStream(f);
@@ -84,7 +49,37 @@ public class Catalog implements Serializable {
         }catch(IOException e){
             e.printStackTrace();
         }
-        
+    };
+
+
+    /**
+     * Ajoute une relation dans le Catalog
+     * @param ri la relation a rajouter
+     */
+    public void addRelationInfo(RelationInfo ri) {
+        listeRelationInfo.add(ri);
     }
 
+    
+    /**
+     * Permet de recuperer une relation a partir de son nom
+     * @param relation nom de la relation
+     * @return la relationInfo
+     */
+    public RelationInfo getRelationInfo(String relation) {
+        for (int i = 0; i < listeRelationInfo.size(); i++) {
+            if (listeRelationInfo.get(i).getNomRelation().equals(relation)) {
+                return listeRelationInfo.get(i);
+            }
+        }
+        return null;
+    }
+
+   
+    /**
+     * Supprime toutes les relations stockées dans l'arrayList
+     */
+    public void reinitialiser(){
+        listeRelationInfo.clear();
+    }
 }

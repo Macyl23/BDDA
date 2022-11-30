@@ -3,7 +3,10 @@ import java.io.File;
 public class DropDB{
 
     /**
-     * execution de la commande DROPDB
+     * Reinitialise le bufferManager
+     * Supprime tout ce qui a dans le Catalog
+     * Réinitialise le disk Manager
+     * SUpprime les fichiers dans le dossier DB
      */
     public static void execute(){
         BufferManager.leBufferManager.reinitialiser();
@@ -13,7 +16,7 @@ public class DropDB{
 
     }
     /**
-     * a verifier !!!
+     * Supprime les fichiers dans le dossier DB
      */
     public static void supprimerFichiers(){
         File lesFic = new File(DBParams.DBPath);

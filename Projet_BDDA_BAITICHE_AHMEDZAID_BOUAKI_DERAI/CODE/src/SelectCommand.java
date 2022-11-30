@@ -4,10 +4,10 @@ import java.util.ArrayList;
 
 public class SelectCommand{
 
-
-    public  String[] commande;
-    public  ArrayList<Record> recordResultat;
-    public  String nomRelation;
+    private final static int MAX_CRITERES = 20;
+    private  String[] commande;
+    private  ArrayList<Record> recordResultat;
+    private  String nomRelation;
     public SelectCommand(String saisie){
         recordResultat=new ArrayList<>();
         parse(saisie);
@@ -40,6 +40,7 @@ public class SelectCommand{
         for(int i=0 ; i<recordResultat.size();i++){
             System.out.println(recordResultat.get(i).toString());
         }
+        System.out.println("Total records = "+recordResultat.size());
     }
 
 
@@ -83,9 +84,15 @@ public class SelectCommand{
         String[] criteres = commande[1].split("AND");
         
         ArrayList<SelectCondition>  sc = new ArrayList<>();
-        for(int i=0 ; i< criteres.length ; i++){
-            sc.add(parseCmd(criteres[i]));
+        if(criteres.length <= MAX_CRITERES){
+            for(int i=0 ; i< criteres.length ; i++){
+                sc.add(parseCmd(criteres[i]));
+            }
+        }else{
+            System.out.println("Vous avez entres plus de 20 criteres");
+            System.exit(1);
         }
+        
         return sc;
     }
 

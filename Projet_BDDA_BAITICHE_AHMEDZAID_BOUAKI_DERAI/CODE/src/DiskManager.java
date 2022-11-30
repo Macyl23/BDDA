@@ -132,10 +132,11 @@ public class DiskManager {
 	}
 
 	/**
-	 * a verifier!!!
+	 * Réinitialisation des attributs du disk manager 
 	 */
 	public void menageDiscManager(){
 		pageDisponible.clear();
+		pageAlloues.clear();
 		count=0;
 	}
 	

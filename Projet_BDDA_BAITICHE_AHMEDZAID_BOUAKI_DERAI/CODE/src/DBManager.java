@@ -6,40 +6,63 @@ public class DBManager {
 
     public static DBManager leDBManager = new DBManager();
 
-    public void init() throws IOException, ClassNotFoundException{
-        Catalog.leCatalog.init();
-        BufferManager.leBufferManager.init(); 
+
+    /**
+     * Méthode qui lance la desérialisation du Catalog 
+     */
+    public void init(){
+        try{
+            Catalog.leCatalog.init();
+            BufferManager.leBufferManager.init(); 
+        }catch(ClassNotFoundException e){
+            e.printStackTrace();
+        }catch(IOException e){
+            e.printStackTrace();
+        }
 
     }
 
-    public void finish() throws IOException{
-        Catalog.leCatalog.finish();
-        BufferManager.leBufferManager.flushAll();
+    /**
+     * Lance la sérialisation du Catalog 
+     * Fait le nettoyage du bufferManager en appelant flushAll
+     */
+    public void finish(){
+        try{
+            Catalog.leCatalog.finish();
+            BufferManager.leBufferManager.flushAll();
+        }catch(IOException e){
+            e.printStackTrace();
+        }
     }
 
-    public void processCommand(String  commande) throws IOException{
+    public void processCommand(String  commande){
         String mots[] = commande.split(" ");
-        switch(mots[0]){
-            case "CREATE":
-                CreateTableCommand c = new CreateTableCommand(commande);
-                c.execute();
-            break;
-            case "DROPDB":
-                DropDB.execute();
-            break;
-            case "INSERT":
-                if(commande.contains("FILECONTENTS")){
-                    InsertionFile insert= new InsertionFile(commande);
-                    insert.insererFichier();
-                }else{
-                    InsertCommand i = new InsertCommand(commande);
-                    i.execute();
-                }
-            break;
-            case "SELECT":
-                SelectCommand s = new SelectCommand(commande);
-                s.execute();
-            break;
+
+        try{
+            switch(mots[0]){
+                case "CREATE":
+                    CreateTableCommand c = new CreateTableCommand(commande);
+                    c.execute();
+                break;
+                case "DROPDB":
+                    DropDB.execute();
+                break;
+                case "INSERT":
+                    if(commande.contains("FILECONTENTS")){
+                        InsertionFile insert= new InsertionFile(commande);
+                        insert.insererFichier();
+                    }else{
+                        InsertCommand i = new InsertCommand(commande);
+                        i.execute();
+                    }
+                break;
+                case "SELECT":
+                    SelectCommand s = new SelectCommand(commande);
+                    s.execute();
+                break;
+            }
+        }catch(IOException e){
+            e.printStackTrace();
         }
     }
 }

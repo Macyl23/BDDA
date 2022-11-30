@@ -4,16 +4,19 @@ import java.util.ArrayList;
 
 public class FileManager {
 
-  // CONSTRUCTEUR FileManager PRIVATE
+  
   private FileManager() {
   }
 
-  // instance de ma classe
+  
   public static FileManager leFileManager = new FileManager();
 
-  // • L’allocation d’une nouvelle page via AllocPage du DiskManager.
-  // C’est le PageId rendu par AllocPage qui devra aussi être rendu par
-  // createNewHeaderPage
+  
+  /**
+   * Permet de créer un Header Page dans une page
+   * @return le pageId de la header Page
+   * @throws IOException
+   */
   public PageId createNewHeaderPage() throws IOException {
     PageId pageIdFile = DiskManager.leDiskManager.allocPage();
     System.out.println("header page id "+pageIdFile.toString());
@@ -25,6 +28,12 @@ public class FileManager {
     return pageIdFile;
   }
 
+  /**
+   * Rajoute une data Page dans un fichier et modifie le contenu du header Page
+   * @param r La relation a qui nous devons rajouter une data Page
+   * @return  le PageId de la nouvelle DP
+   * @throws IOException
+   */
   public PageId addDataPage(RelationInfo r) throws IOException {
     
     PageId pid = DiskManager.leDiskManager.allocPage();
@@ -62,25 +71,24 @@ public class FileManager {
     return pid;
   }
 
-  /*
-   Cette méthode doit retourner, pour la relation désignée par relInfo, le
-   PageId d’une page de données
-   sur laquelle il reste assez de place pour insérer le record ; si une telle
-   page n’existe pas, la méthode
-   retournera null.
+  
+  /**
+   * Permet de trouver une page de libre pour stocker un record
+   * @param r la relation pour recuperer le headerPage
+   * @param sizeRecord la taille du record
+   * @return la pageId qui est libre
+   * @throws IOException
    */
   public PageId getFreeDataPageId(RelationInfo r, int sizeRecord) throws IOException {
-    // recupere byteBuffer de la relation
     PageId pageId = new PageId();
     int j = 0;
-    
+
     ByteBuffer bufferHeaderPage = BufferManager.leBufferManager.getPage(r.getHeaderPageId());
     
     // verifier que le ByteBuffer contient page tel que sizeRecord correspondant à
     // la taille du record à insérer de la page
       for (int i = 12; i < bufferHeaderPage.capacity(); i += 12) {
         if (bufferHeaderPage.getInt(i) >= sizeRecord) {
-          System.out.println("im here");
           j = i - 8;
           pageId.fileIdx = bufferHeaderPage.getInt(j);
           j = i - 4;
@@ -90,12 +98,18 @@ public class FileManager {
         }
       }
       BufferManager.leBufferManager.freePage(r.getHeaderPageId(), false);
-      
       return FileManager.leFileManager.addDataPage(r);
-    
-   
   }
 
+
+  
+  /**
+   * Ecris le contenu d'un record dans une data Page
+   * @param r le record que nous voulons écrire
+   * @param pid la pageId ou le record sera stocké
+   * @return le rid du record
+   * @throws IOException
+   */
   public RecordId writeRecordToDataPage(Record r, PageId pid) throws IOException {
       
     System.out.println("pid = "+pid.toString());
@@ -150,6 +164,13 @@ public class FileManager {
     return new RecordId(pid, nbSlot);
   }
 
+  /**
+   * Recupere tous les records d'une data Page
+   * @param r la relation a laquelle le record appartient
+   * @param pid la dataPage ou les records sont stockes
+   * @return Liste de tous les records de la data Page
+   * @throws IOException
+   */
   public ArrayList<Record> getRecordsInDataPage(RelationInfo r, PageId pid) throws IOException {
     ByteBuffer bufferDataPage = BufferManager.leBufferManager.getPage(pid);
     int posDebutRecord = 0;
@@ -185,6 +206,13 @@ public class FileManager {
     return listeRecords;
   }
 
+
+  /**
+   * Recupere toutes les DataPage
+   * @param r la relation ou on veut recupéré les DP
+   * @return Listre de pageId de toutes les DP
+   * @throws IOException
+   */
   public ArrayList<PageId> getAllDataPage(RelationInfo r) throws IOException {
     /*HEADER PAGE */
     ByteBuffer bufferHeaderPage = BufferManager.leBufferManager.getPage(r.getHeaderPageId());
@@ -212,18 +240,24 @@ public class FileManager {
     return listeDataPage;
   }
 
-  /*Inserer un record dans une relation
-   * On renvoie le rid
-   * Du record qu'on veut ecrire dans la premiere dataPage qui est libre
-   * On recupere la dataPage libre en lancant la fonction getFreeDataPageId
-   * Acec en parametres la relation info et la taille du record
+  
+  /**
+   * Permet d'inserer un record dans un relation
+   * @param r le record a inserer
+   * @return le rid du record
+   * @throws IOException
    */
   public RecordId insertRecordIntoRelation(Record r) throws IOException {
 
     return writeRecordToDataPage(r,getFreeDataPageId(r.getRelInfo(), r.recordSizeFromValues()));
   }
 
-  /*Fonction qui permet de recuperer tous les records d'une relation */
+  /**
+   * Recupere tous les records d'une relation
+   * @param r La relation ou on veut recuperer les records
+   * @return Liste de records de la relation
+   * @throws IOException
+   */
   public ArrayList<Record> getAllRecords(RelationInfo r) throws IOException {
     /* La liste qu'on devra retourner
      * On stocke toutes les data page dans une arraylist

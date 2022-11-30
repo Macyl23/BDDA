@@ -103,12 +103,12 @@ public class BufferManager {
     /**
      * @param pageId
      * @param valdirty
-     *                 Méthode qui permet de liberer une page
-     *                 On parcourt le buffPool pour trouver le num de page que nous
-     *                 voulons décharger
-     *                 une fois trouvé on incrémente son Ts et son pinCount
-     *                 On teste le valdirty
-     *                 Si valdirty = true on le met true sinon false
+     *Méthode qui permet de liberer une page
+     *On parcourt le buffPool pour trouver le num de page que nous
+     *voulons décharger
+     *une fois trouvé on incrémente son Ts et son pinCount
+     *On teste le valdirty
+     *Si valdirty = true on le met true sinon false
      */
     public void freePage(PageId pageId, boolean valdirty) {
         for(int i=0 ; i<buffPool.length ; i++){
@@ -144,6 +144,10 @@ public class BufferManager {
 
     }
 
+    
+    /**
+     * Méthode qui permet d'afficher le contenu du bufferManager
+     */
     public void buffPoolContenu(){
         System.out.println("Contenu du buffer manager");
         for(int i= 0 ; i<buffPool.length; i++){
