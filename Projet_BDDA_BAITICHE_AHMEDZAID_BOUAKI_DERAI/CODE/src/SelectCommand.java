@@ -60,7 +60,18 @@ public class SelectCommand{
                 boolean resultat=true;
                 while(i<criteres.size() && resultat){
                     int indiceColumn= listeCriteres().get(i).getIndiceColonne();
-                    resultat= listeCriteres().get(i).verifConditionString(record.values.get(indiceColumn)); 
+                    String type = record.getRelInfo().getInfoColonne().get(indiceColumn).getType();
+                    switch (type) {
+                        case "INTEGER":
+                            resultat= listeCriteres().get(i).verifConditionInt(Integer.valueOf(record.values.get(indiceColumn)));
+                            break;
+                        case "REAL":
+                            resultat= listeCriteres().get(i).verifConditionReal(Float.valueOf(record.values.get(indiceColumn)));
+                            break;
+                        default:
+                            resultat= listeCriteres().get(i).verifConditionString(record.values.get(indiceColumn));
+                            break;
+                    }
                     i++;
                 }
                 if(resultat){

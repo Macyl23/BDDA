@@ -23,16 +23,47 @@ public class SelectCondition {
         switch (this.op){
             case "=":
 			return this.valeurComparaison.equals(valeurRecord);
-            case "<":
-                return valeurRecord.compareTo(this.valeurComparaison) < 0;
-            case ">":
-                return valeurRecord.compareTo(this.valeurComparaison) > 0;
-            case "<=":
-                return valeurRecord.compareTo(this.valeurComparaison) <= 0;
-            case ">=":
-                return valeurRecord.compareTo(this.valeurComparaison) >= 0;
             case "<>":
                 return valeurRecord.compareTo(this.valeurComparaison) != 0;
+            default:
+                System.out.println("Operateur incorrect");
+                return false;
+        }
+    }
+
+    public boolean verifConditionInt(int valeurRecord){
+        switch (this.op){
+            case "=":
+			return Integer.valueOf(this.valeurComparaison)==valeurRecord;
+            case "<":
+                return valeurRecord < Integer.valueOf(this.valeurComparaison);
+            case ">":
+                return valeurRecord > Integer.valueOf(this.valeurComparaison);
+            case "<=":
+                return valeurRecord <= Integer.valueOf(this.valeurComparaison);
+            case ">=":
+                return valeurRecord >= Integer.valueOf(this.valeurComparaison);
+            case "<>":
+                return valeurRecord != Integer.valueOf(this.valeurComparaison);
+            default:
+                System.out.println("Operateur incorrect");
+                return false;
+        }
+    }
+    public boolean verifConditionReal(Float valeurRecord){
+        switch (this.op){
+            case "=":
+			    return Float.compare(valeurRecord, Float.valueOf(valeurComparaison)) == 0;
+            case "<":
+                return  Float.compare(valeurRecord, Float.valueOf(valeurComparaison))<0;
+            case ">":
+                return Float.compare(valeurRecord, Float.valueOf(valeurComparaison))>0;
+            case "<=":
+                return Float.compare(valeurRecord, Float.valueOf(valeurComparaison))<=0;
+            case ">=":
+                return Float.compare(valeurRecord, Float.valueOf(valeurComparaison))>=0;
+            case "<>":
+                return Float.compare(valeurRecord, Float.valueOf(valeurComparaison))!=0;
             default:
                 System.out.println("Operateur incorrect");
                 return false;
