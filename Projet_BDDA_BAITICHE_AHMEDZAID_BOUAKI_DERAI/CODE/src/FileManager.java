@@ -19,7 +19,6 @@ public class FileManager {
    */
   public PageId createNewHeaderPage() throws IOException {
     PageId pageIdFile = DiskManager.leDiskManager.allocPage();
-    System.out.println("header page id "+pageIdFile.toString());
     BufferManager.leBufferManager.initBuffPool();
     ByteBuffer bufferHeaderPage = BufferManager.leBufferManager.getPage(pageIdFile);
     bufferHeaderPage.putInt(0, 0);
@@ -112,7 +111,6 @@ public class FileManager {
    */
   public RecordId writeRecordToDataPage(Record r, PageId pid) throws IOException {
       
-    System.out.println("pid = "+pid.toString());
     ByteBuffer bufferDataPage = BufferManager.leBufferManager.getPage(pid);
     
     /*

@@ -39,7 +39,6 @@ public class InsertionFile {
         for(String value : valeurRecords){
             String chaine = "INSERT INTO " + this.nomRelation + " VALUES (";
             String saisie = chaine + value+")";
-            System.out.println("saisie = "+saisie);
             try {
                 InsertCommand is = new InsertCommand(saisie);
                 is.execute();
