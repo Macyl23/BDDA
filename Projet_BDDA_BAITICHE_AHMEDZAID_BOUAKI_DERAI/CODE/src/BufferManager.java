@@ -30,7 +30,7 @@ public class BufferManager {
     //     return leBufferManager;
     // }
 
-    public void init(){}
+   
     public void initBuffPool(){
         for(int i = 0 ; i<buffPool.length ; i++){
             buffPool[i] = new Frame();

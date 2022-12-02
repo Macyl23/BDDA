@@ -5,7 +5,7 @@ import java.util.Scanner;
 public class Main {
 	public static void main(String[] args ) throws IOException, ClassNotFoundException {   
         DBParams.DBPath = args[0];
-        DBParams.pageSize = 1000;
+        DBParams.pageSize = 4096;
         DBParams.frameCount=2;
         DBParams.maxPagesPerFile=4;
         

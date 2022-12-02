@@ -13,7 +13,7 @@ public class DBManager {
     public void init(){
         try{
             Catalog.leCatalog.init();
-            BufferManager.leBufferManager.init(); 
+            BufferManager.leBufferManager.initBuffPool(); 
         }catch(ClassNotFoundException e){
             e.printStackTrace();
         }catch(IOException e){

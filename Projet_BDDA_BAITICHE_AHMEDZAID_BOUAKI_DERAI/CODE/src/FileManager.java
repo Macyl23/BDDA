@@ -19,7 +19,6 @@ public class FileManager {
    */
   public PageId createNewHeaderPage() throws IOException {
     PageId pageIdFile = DiskManager.leDiskManager.allocPage();
-    BufferManager.leBufferManager.initBuffPool();
     ByteBuffer bufferHeaderPage = BufferManager.leBufferManager.getPage(pageIdFile);
     bufferHeaderPage.putInt(0, 0);
     BufferManager.leBufferManager.freePage(pageIdFile, true);

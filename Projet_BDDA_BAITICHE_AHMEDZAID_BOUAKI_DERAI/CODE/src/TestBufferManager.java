@@ -6,7 +6,6 @@ public class TestBufferManager {
 
     /* TESTS UNITAIRES */
     public static void testGetPageWhenAllFrameEmpty() throws IOException{
-        BufferManager.leBufferManager.init();
         BufferManager.leBufferManager.initBuffPool();
         PageId p = new PageId(0,0);
         BufferManager.leBufferManager.getPage(p);
@@ -34,7 +33,6 @@ public class TestBufferManager {
      * En affichant La page existe 
      */
     public static void testGetPageWhenPageAlreadyExists() throws IOException{
-        BufferManager.leBufferManager.init();
         BufferManager.leBufferManager.initBuffPool();
         PageId p = new PageId(0,0);
         BufferManager.leBufferManager.getPage(p);
@@ -45,7 +43,6 @@ public class TestBufferManager {
      * En affichant le contenu du buffPool
      */
     public static void testGetPageWhenAllFramesAreFull() throws IOException{
-        BufferManager.leBufferManager.init();
         BufferManager.leBufferManager.initBuffPool();
         PageId p = new PageId(0,0);
         PageId p1 = new PageId(0,1);
