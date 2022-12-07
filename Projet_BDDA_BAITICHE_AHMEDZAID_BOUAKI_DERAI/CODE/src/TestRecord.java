@@ -15,8 +15,8 @@ public class TestRecord {
         re.values.add("ABC");
         re.values.add("30.5");
         re.values.add("31");
-        System.out.println(re.getWrittenSize());
-        ByteBuffer buff = ByteBuffer.allocate(r.getNbColonnes()*4+4+re.getWrittenSize());
+        System.out.println(re.recordSizeFromValues());
+        ByteBuffer buff = ByteBuffer.allocate(r.getNbColonnes()*4+4+re.recordSizeFromValues());
         re.writeToBuffer(buff, r.getNbColonnes()*4+4);
         re.readFromBuffer(buff, r.getNbColonnes()*4+4);
         System.out.println(re.values);

@@ -86,7 +86,7 @@ public class FileManager {
     // verifier que le ByteBuffer contient page tel que sizeRecord correspondant à
     // la taille du record à insérer de la page
       for (int i = 12; i < bufferHeaderPage.capacity(); i += 12) {
-        if (bufferHeaderPage.getInt(i) >= sizeRecord) {
+        if (bufferHeaderPage.getInt(i) >= sizeRecord+8) {
           j = i - 8;
           pageId.fileIdx = bufferHeaderPage.getInt(j);
           j = i - 4;
@@ -127,7 +127,7 @@ public class FileManager {
     int nbSlot = bufferDataPage.getInt(DBParams.pageSize - 8);
     int positionInsertionSlot = (DBParams.pageSize - 8) - ((nbSlot+1) * 8);
     bufferDataPage.putInt(positionInsertionSlot, positionDispo);
-    bufferDataPage.putInt(positionInsertionSlot + 4, r.getWrittenSize());
+    bufferDataPage.putInt(positionInsertionSlot + 4, r.recordSizeFromValues());
 
     /*
      * Recuperer la valeur du nombre du slot
@@ -140,7 +140,7 @@ public class FileManager {
     /*
      * Mise a jour de la position de l'espace disponible
      */
-    positionDispo = positionDispo + r.getWrittenSize();
+    positionDispo = positionDispo + r.recordSizeFromValues();
     bufferDataPage.putInt(DBParams.pageSize - 4, positionDispo);
 
 
@@ -152,11 +152,15 @@ public class FileManager {
      * Changer le nb d'octets libres dans la dataPage
      */
     ByteBuffer bufferHeaderPage = BufferManager.leBufferManager.getPage(r.getRelInfo().getHeaderPageId());
-    int posNbOctetsLibreDP = bufferHeaderPage.getInt(0) * 12;
-    bufferHeaderPage.getInt(posNbOctetsLibreDP);
-    int newOctetsLibre = bufferHeaderPage.getInt(posNbOctetsLibreDP)-r.getWrittenSize()-8;
-    bufferHeaderPage.putInt(posNbOctetsLibreDP, newOctetsLibre);
-    
+
+    int nbDataPages = bufferHeaderPage.getInt(0) * 12+4;
+
+    for(int i=4 ; i<nbDataPages ; i+=12){
+      if((bufferHeaderPage.getInt(i) == pid.fileIdx) && (bufferHeaderPage.getInt(i+4)==pid.pageIdx)){
+        int newOctetsLibre = bufferHeaderPage.getInt(i+8)-r.recordSizeFromValues()-8;
+        bufferHeaderPage.putInt(i+8, newOctetsLibre);
+      }
+    }    
     BufferManager.leBufferManager.freePage(r.getRelInfo().getHeaderPageId(),true);
     return new RecordId(pid, nbSlot);
   }
@@ -196,8 +200,6 @@ public class FileManager {
       recordTemp.readFromBuffer(bufferDataPage, posDebutRecord);
       listeRecords.add(recordTemp);
       idxPosDebutRecord+=8;
-
-
     }
     BufferManager.leBufferManager.freePage(pid, true);
     return listeRecords;

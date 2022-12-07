@@ -22,9 +22,17 @@ public class SelectCondition {
         
         switch (this.op){
             case "=":
-			return this.valeurComparaison.equals(valeurRecord);
+			    return this.valeurComparaison.equals(valeurRecord);
             case "<>":
                 return valeurRecord.compareTo(this.valeurComparaison) != 0;
+            case "<":
+                return valeurRecord.compareTo(this.valeurComparaison) < 0;
+            case ">":
+                return valeurRecord.compareTo(this.valeurComparaison) > 0;
+            case "<=":
+                return valeurRecord.compareTo(this.valeurComparaison) <= 0;
+            case ">=":
+                return valeurRecord.compareTo(this.valeurComparaison)>=0;
             default:
                 System.out.println("Operateur incorrect");
                 return false;
