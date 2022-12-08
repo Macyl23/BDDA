@@ -1,20 +1,20 @@
 import java.io.IOException;
-import java.nio.Buffer;
 import java.nio.ByteBuffer;
-import java.util.ArrayList;
-import java.util.Iterator;
 
 public class RecordIterator {
+    //attributs
     private RelationInfo relInfo;
     private PageId pageId;
     private static int pos=DBParams.pageSize-8;
     private static int nbRecordsLus=0;
-
+    // constructeur
     public RecordIterator(RelationInfo relInfo,PageId pageId){
         this.relInfo = relInfo;
         this.pageId = pageId;
 
     }
+    // METHODE 
+    
     // signaler qu'on utilise plu itératuer car 
     //y'a plu de record present dans le buffer
     // on libere la page auprès du buffermanager
@@ -37,7 +37,7 @@ public class RecordIterator {
     // remet au debut de la page le curseur de l'iterateur 
     // a verifier
     public void reset(){
-       int pos=DBParams.pageSize-8;
+        pos=DBParams.pageSize-8;
 
     }
     public Record getNextRecord() throws IOException {
