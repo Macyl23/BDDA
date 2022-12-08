@@ -15,10 +15,29 @@ public class RecordIterator {
         this.pageId = pageId;
 
     }
-    public void close(){
+    // signaler qu'on utilise plu itératuer car 
+    //y'a plu de record present dans le buffer
+    // on libere la page auprès du buffermanager
+    public void close() throws IOException{
+       boolean valDirty = false;
+
+        if(getNextRecord() == null) {
+            // a verifier la partie avec valdirty xD
+            valDirty = true;
+            ByteBuffer b = BufferManager.leBufferManager.getPage(pageId);
+            // on libere la page auprès du buffermanager
+            BufferManager.leBufferManager.freePage(pageId,valDirty);
+        }
+        // message disant qu'on a pas finit ou finis
+        else {
+            System.out.println("il reste des recors dans la page");
+        }
 
     }
+    // remet au debut de la page le curseur de l'iterateur 
+    // a verifier
     public void reset(){
+       int pos=DBParams.pageSize-8;
 
     }
     public Record getNextRecord() throws IOException {
