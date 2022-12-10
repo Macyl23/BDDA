@@ -1,8 +1,8 @@
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
-
 public class RecordIterator {
+    //attributs
     private RelationInfo relInfo;
     private PageId pageId;
     private int pos;
@@ -15,6 +15,8 @@ public class RecordIterator {
         nbRecordsLus=0;
 
     }
+    // METHODE 
+    
     // signaler qu'on utilise plu itératuer car 
     //y'a plu de record present dans le buffer
     // on libere la page auprès du buffermanager
