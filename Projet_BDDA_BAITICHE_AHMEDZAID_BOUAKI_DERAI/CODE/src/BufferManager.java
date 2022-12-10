@@ -91,6 +91,7 @@ public class BufferManager {
                 buffPool[i].setPageId(pageId);
                 buffPool[i].setPinCount(1);
                 buffPool[i].setFlagDirty(false);
+                buffPool[i].setBuff(ByteBuffer.allocate(DBParams.pageSize));
                 DiskManager.leDiskManager.readPage(pageId, buffPool[i].getBuff());  
                 buffPool[i].toString();
                 trouvee=true; 

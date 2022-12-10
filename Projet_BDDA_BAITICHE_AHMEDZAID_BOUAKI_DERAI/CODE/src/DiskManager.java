@@ -95,6 +95,7 @@ public class DiskManager {
 		f.seek(start);
 		if(buff.array().length == DBParams.pageSize){
 			f.read(buff.array());
+
 		}else{
 			for(int i=0; i< DBParams.pageSize; i++){
 				buff.put(i,f.readByte());

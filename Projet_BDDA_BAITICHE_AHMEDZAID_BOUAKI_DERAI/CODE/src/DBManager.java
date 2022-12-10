@@ -57,8 +57,13 @@ public class DBManager {
                     }
                 break;
                 case "SELECT":
-                    SelectCommand s = new SelectCommand(commande);
-                    s.execute();
+                    if(mots[3].length() == 1){
+                        SelectCommand s = new SelectCommand(commande);
+                        s.execute();
+                    }else{
+                        SelectJoinCommand sj = new SelectJoinCommand(commande);
+                        sj.execute();
+                    }
                 break;
             }
         }catch(IOException e){
