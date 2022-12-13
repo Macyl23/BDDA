@@ -85,9 +85,9 @@ public class SelectJoinCommand {
         if(joins.length<=MAX_CRITERES){
             for(int k=0 ; k<joins.length ; k++){
                 ArrayList<Integer> indices =new ArrayList<>();
-                for(int i=0 ; i< SelectCondition.getOperateur().length;i++){
-                    if(joins[k].contains(SelectCondition.getOperateur()[i])){
-                        String[] condition = joins[k].split(SelectCondition.getOperateur()[i]);
+                for(int i=0 ; i< SelectConditionJoin.getOperateur().length;i++){
+                    if(joins[k].contains(SelectConditionJoin.getOperateur()[i])){
+                        String[] condition = joins[k].split(SelectConditionJoin.getOperateur()[i]);
                         j=0;
                         while(j<2){
                             String[] criteres = condition[j].split("\\.");
@@ -96,6 +96,7 @@ public class SelectJoinCommand {
                             j++;
                         }
                         op = SelectCondition.getOperateur()[i];
+                        i=SelectConditionJoin.getOperateur().length;
                     }
                 }
                 conditionJoins.add(new SelectConditionJoin(indices, op));

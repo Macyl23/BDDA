@@ -126,6 +126,7 @@ public class SelectCommand{
                     val = condition[1].substring(0,condition[1].length()-1);
                 }else
                     val = condition[1];
+                i=SelectCondition.getOperateur().length;
             }
         }
         return new SelectCondition(indice,op,val);
@@ -139,7 +140,6 @@ public class SelectCommand{
      */
     private int getIndexColumn(String nomColonne){
         RelationInfo r = Catalog.leCatalog.getRelationInfo(nomRelation);
-
         for(int i=0 ; i<r.getNbColonnes() ; i++){
             if(r.getInfoColonne().get(i).getNom().equals(nomColonne)){
                 return i;

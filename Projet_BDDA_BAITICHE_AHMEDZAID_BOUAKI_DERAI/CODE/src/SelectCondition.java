@@ -2,7 +2,7 @@ public class SelectCondition {
 
 
     private int indiceColonne;
-    private static final String[] operateur = {"=","<",">","<>","<=",">="};
+    private static final String[] operateur = {"<>","<=",">=","=","<",">"};
     private String valeurComparaison;
     private String op;
 
